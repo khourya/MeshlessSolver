@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\BoundaryDef.cpp" />
     <ClCompile Include="Source\CollocationStrategy.cpp" />
     <ClCompile Include="Source\GlobalCollocation.cpp" />
     <ClCompile Include="Source\LUFunctions.cpp" />
@@ -40,6 +41,7 @@
     <ClCompile Include="Source\WriteUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\BoundaryDef.h" />
     <ClInclude Include="Source\CollocationStrategy.h" />
     <ClInclude Include="Source\MeshlessSolver.h" />
     <ClInclude Include="Source\NodeGenStrategy.h" />
