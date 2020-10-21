@@ -103,6 +103,16 @@ int PreprocessDomain(bool* checker, Options* options, InputData* inputData, Prep
 		}
 	} // end generating boundary data
 
+	// Creating boundary objects
+	for (int i = 0; i < inputData->nSides; i++)
+	{
+		int boundaryKind = inputData->BoundaryType[i];
+		double boundaryValue = inputData->BCS[i][1];
+		BoundaryObject* boundaryConditionObject = new BoundaryObject(boundaryKind, inputData->D, boundaryValue);
+
+		preProcData->Boundaries.push_back(boundaryConditionObject);
+	}
+
 	// Calculate Average Spacing
 	preProcData->delX = 0.5 * preProcData->delX / sumX;
 	preProcData->delY = 0.5 * preProcData->delY / sumY;

@@ -25,6 +25,31 @@ enum class collocationStratFlag
 	Global
 };
 
+struct SolutionData; 
+
+//----------------------------------------------------------------------------------------------------------------------
+/// \brief
+/// Options: Class defining the boundary conditions and containing the functions for implementing BC's
+/// 
+//----------------------------------------------------------------------------------------------------------------------
+class BoundaryObject
+{
+public:
+	BoundaryObject(int boundaryKind, double diffusionCoefficient, double boundaryValue);
+
+	void ApplyBoundaryCondition(SolutionData& solutionData);
+
+private:
+	int m_boundaryKind = 0;
+	std::vector<int> m_boundaryMemberIndices;
+
+	double m_volume = 0.;
+
+	double m_gamma1 = 0.;
+	double m_gamma2 = 0.;
+	double m_gamma3 = 0.;
+};
+
 //----------------------------------------------------------------------------------------------------------------------
 /// \brief
 /// Options: Struct containing the information collected/read from the LCMMOptions.inp input options file
@@ -115,9 +140,10 @@ struct PreprocessorData
 		gamma1 = 1;
 		gamma2 = D or k/h; (diffusion coefficient / film coefficient)
 	*/
-	std::vector<double> gamma1;            // differential lengths for each boundary segment
-	std::vector<double> gamma2;            // differential lengths for each boundary segment
-	std::vector<double> gamma3;            // differential lengths for each boundary segment
+	std::vector<double> gamma1;                 // Gamma1, specifying boundary type
+	std::vector<double> gamma2;                 // Gamma2, specifying boundary type
+	std::vector<double> gamma3;                 // Gamma3, specifying boundary type
+	std::vector<BoundaryObject*> Boundaries; // vector containing the boundary objects
 
 	// Geometry, Location of Data Centers
 	std::vector<double> Xc;                // x-coordinate for Data Centers
