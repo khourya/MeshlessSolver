@@ -29,7 +29,7 @@
 ///
 /// _PUT_DETAILED_DESCRIPTION_HERE_
 //----------------------------------------------------------------------------------------------------------------------
-int ReadInputs(bool* checker, InputData* inputData)
+int ReadInputs(bool* checker, InputData* inputData, PreprocessorData* preProcData)
 {
     int errorFlag = 0;
     int nBoundaryPoints = 0;
@@ -42,7 +42,7 @@ int ReadInputs(bool* checker, InputData* inputData)
 
     // Begin doing actual work
     std::ifstream inputFile;
-    inputFile.open("Data\\LCMMData.inp");
+    inputFile.open("Data\\LCMMInput.inp");
 
     if (!inputFile) {
         std::cout << endl << "Unable to open the input file" << endl;
@@ -61,10 +61,10 @@ int ReadInputs(bool* checker, InputData* inputData)
     if (*checker)
         std::cout << line << endl;
 
-    inputFile >> inputData->D >> inputData->Km >> inputData->Ke >> inputData->K12 >> inputData->K21 >> inputData->Vt >> inputData->Vb >> inputData->Vd;  // Coefficient Values
+    inputFile >> inputData->D >> inputData->Km >> inputData->Ke >> inputData->K12 >> inputData->K21 >> inputData->Vt >> inputData->Vb;  // Coefficient Values
 
     if (*checker)
-        std::cout << inputData->D << tab << inputData->Km << tab << inputData->Ke << tab << inputData->K12 << tab << inputData->K21 << tab << inputData->Vt << tab << inputData->Vb << tab << inputData->Vd << endl;
+        std::cout << inputData->D << tab << inputData->Km << tab << inputData->Ke << tab << inputData->K12 << tab << inputData->K21 << tab << inputData->Vt << tab << inputData->Vb << tab << endl;
     
     std::getline(inputFile, line); // gets us back on track as the input >> inVariables thing doesn't count as a lineread
 
@@ -125,17 +125,27 @@ int ReadInputs(bool* checker, InputData* inputData)
 
     for (int i = 0; i < inputData->nSides; i++)
     {
-        inputFile >> indexSide >> boundaryKind >> x1 >> y1 >> x2 >> y2 >> x3 >> y3; 
+        double vehicleVolume = 0.;
+
+        inputFile >> indexSide >> boundaryKind >> x1 >> y1 >> x2 >> y2 >> x3 >> y3 >> vehicleVolume;
         if (*checker)
-            std::cout << indexSide << tab << boundaryKind << tab << x1 << tab << y1 << tab << x2 << tab << y2 << tab << x3 << tab << y3 << endl;
+            std::cout << indexSide << tab << boundaryKind << tab << x1 << tab << y1 << tab << x2 << tab << y2 << tab << x3 << tab << y3 << vehicleVolume << endl;
 
 
-        if (boundaryKind != 1 && boundaryKind != 2 && boundaryKind != 3)
+        if (boundaryKind != 1 && boundaryKind != 2 && boundaryKind != 3 && boundaryKind != 4)
         {
             std::cout << endl << "Invalid Boundary Condition Type." << endl << "Input Kind: " << boundaryKind << ", at side: " << indexSide << endl;
             errorFlag = -2003;
             return errorFlag;
         }
+
+        if (boundaryKind == 4 && vehicleVolume == 0.)
+        {
+            std::cout << endl << "Finite Volume BC has Zero Volume. See side: " << indexSide << endl;
+            errorFlag = -2004;
+            return errorFlag;
+        }
+
         inputData->BoundaryType.push_back(boundaryKind);
 
         std::vector<double> BVRow = { x1, x2, x3 };
@@ -143,6 +153,13 @@ int ReadInputs(bool* checker, InputData* inputData)
 
         std::vector<double> HRow = { y1, y2, y3 };
         inputData->HBS.push_back(HRow);
+
+        // Creating boundary objects
+        double boundaryValue = inputData->BCS[i][1]; // alternatively, x2, or might reduce to "simple" boundaries?
+        BoundaryObject* boundaryConditionObject = new BoundaryObject(boundaryKind, inputData->D, boundaryValue, vehicleVolume);
+
+        preProcData->Boundaries.push_back(boundaryConditionObject);
+
     }
 
     inputFile.close();
@@ -171,7 +188,6 @@ void InputChecker(InputData* inputData)
     std::cout << "Checker for input file: " << std::endl;
     std::cout << "Vt: " << inputData->Vt << std::endl;
     std::cout << "Vb: " << inputData->Vb << std::endl;
-    std::cout << "Vd: " << inputData->Vd << std::endl;
     std::cout << "nOut: " << inputData->outInterval << std::endl;
     std::cout << "nSides: " << inputData->nSides << std::endl;
     std::cout << std::endl;

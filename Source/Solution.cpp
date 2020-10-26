@@ -66,20 +66,24 @@ int Solution(bool* checker, InputData* inputData, PreprocessorData* preProcData,
 	{
 		solutionData->c_next[i] = solutionData->cT_int[i] + dt * (D * solutionData->D2T[i] - (K21 + Km) * solutionData->cT_int[i] + (K12 * Vb / Vt) * solutionData->cB_int[i]);
 		solutionData->cb_next[i] = solutionData->cB_int[i] + dt * ((K21 * Vt / Vb) * solutionData->cT_int[i] - (K12 + Ke) * solutionData->cB_int[i]);
-
 	}
 
 	// Calculate Boundary Concentrations using Internal Normal Layer
-	for (int i = 0; i < NB; i++)
+	for (BoundaryObject* boundary : preProcData->Boundaries)
 	{
-		double g1 = preProcData->gamma1[i];
-		double g2 = preProcData->gamma2[i];
-		double g3 = preProcData->gamma3[i];
-
-		double range = preProcData->dL[i] / 4.;
-		solutionData->c_next[i] = (g3 * range + g2 * solutionData->c_next[NB + i]) / (g1 * range + g2);
-		solutionData->cb_next[i] = (g3 * range + g2 * solutionData->cb_next[NB + i]) / (g1 * range + g2);
+		boundary->ApplyBoundaryCondition(preProcData, solutionData);
 	}
+
+	// for (int i = 0; i < NB; i++)
+	// {
+	// 	double g1 = preProcData->gamma1[i];
+	// 	double g2 = preProcData->gamma2[i];
+	// 	double g3 = preProcData->gamma3[i];
+	// 
+	// 	double range = preProcData->dL[i] / 4.;
+	// 	solutionData->c_next[i] = (g3 * range + g2 * solutionData->c_next[NB + i]) / (g1 * range + g2);
+	// 	solutionData->cb_next[i] = (g3 * range + g2 * solutionData->cb_next[NB + i]) / (g1 * range + g2);
+	// }
 
 	// Update Concentration Vector
 	for (int i = 0; i < NN; i++)

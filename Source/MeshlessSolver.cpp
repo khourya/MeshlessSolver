@@ -33,11 +33,16 @@ int main()
     // Flag for Error Reporting
     int errorFlag = 0;
 
+    // Data Structures to be used
+    Options options;
+    InputData inputData;
+    PreprocessorData preProcData;
+    SolutionData solution;
+
     if (runCode)
     {
     // Reading Options --------------------------------------------------------------------------------
     std::cout << "Reading options file.......................................";
-    Options options;
     errorFlag = ReadOptions(&checker, &options);
     if (errorFlag != 0)
     {
@@ -49,8 +54,7 @@ int main()
 
     // Reading Input ----------------------------------------------------------------------------------
     std::cout << "Reading input file.........................................";
-    InputData inputData;
-    errorFlag = ReadInputs(&checker, &inputData);
+    errorFlag = ReadInputs(&checker, &inputData, &preProcData);
     if (errorFlag != 0)
     {
         LogErrors(errorFlag);
@@ -61,8 +65,6 @@ int main()
 
     // Preprocessing ----------------------------------------------------------------------------------
     std::cout << "Generating geometric and field data........................";
-    PreprocessorData preProcData;
-    SolutionData solution;
     errorFlag = PreprocessDomain(&checker, &options, &inputData, &preProcData, &solution);
     if (errorFlag != 0)
     {

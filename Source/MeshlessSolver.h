@@ -15,7 +15,7 @@ bool RunUnitTests();
 
 // Reading Inputs
 void InputChecker(InputData* inputData);
-int ReadInputs(bool* checker, InputData* inputData);
+int ReadInputs(bool* checker, InputData* inputData, PreprocessorData* preProcData);
 
 // Reading Options
 void OptionsChecker(nodeStratFlag* nodeGenFlag, collocationStratFlag* collocationFlag);

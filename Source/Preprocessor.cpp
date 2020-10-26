@@ -67,15 +67,22 @@ int PreprocessDomain(bool* checker, Options* options, InputData* inputData, Prep
 			double dL = std::sqrt(dX*dX + dY*dY);
 			double dispX = std::abs(-dY / dL);
 			double dispY = std::abs(dX / dL);
+			double dNormalX = dY / dL;
+			double dNormalY = -dX / dL;
 
 			preProcData->dL.push_back(dL);
-			preProcData->dNx.push_back(dY / dL);
-			preProcData->dNy.push_back(-dX / dL);
+			preProcData->dNx.push_back(dNormalX);
+			preProcData->dNy.push_back(dNormalY);
 			preProcData->delX += dL * dispX;
 			preProcData->delY += dL * dispY;
 			sumX += dispX;
 			sumY += dispY;
 
+			int NB_index = preProcData->nBoundaryPoints - 1;
+			preProcData->Boundaries[i]->AddNode(NB_index);
+			preProcData->Boundaries[i]->AddNormalVectors(dNormalX, dNormalY);
+
+			// Might be able to pop this soon: --------------------------------------------------------------------------------------------------------------------
 			double BC = inputData->BCS[i][0] * (s2) * (s2 - 1.) / 2. + inputData->BCS[i][1] * (1. + s2) * (1. - s2) + inputData->BCS[i][2] * (s2) * (s2 + 1.) / 2.;
 			double HB = inputData->HBS[i][0] * (s2) * (s2 - 1.) / 2. + inputData->HBS[i][1] * (1. + s2) * (1. - s2) + inputData->HBS[i][2] * (s2) * (s2 + 1.) / 2.;
 
@@ -83,35 +90,25 @@ int PreprocessDomain(bool* checker, Options* options, InputData* inputData, Prep
 			preProcData->gamma2.push_back(0.);
 			preProcData->gamma3.push_back(BC);
 
-			int NB = static_cast<int>(preProcData->nBoundaryPoints);
-
 			switch (inputData->BoundaryType[i])
 			{
 			case 1:
-				preProcData->gamma1[NB - 1] = 1.;
-				preProcData->gamma2[NB - 1] = 0.;
+				preProcData->gamma1[NB_index] = 1.;
+				preProcData->gamma2[NB_index] = 0.;
 				break;
 			case 2:
-				preProcData->gamma1[NB - 1] = 0.;
-				preProcData->gamma2[NB - 1] = -inputData->D;
+				preProcData->gamma1[NB_index] = 0.;
+				preProcData->gamma2[NB_index] = -inputData->D;
 				break;
 			case 3:
-				preProcData->gamma1[NB - 1] = 1.;
-				preProcData->gamma2[NB - 1] = inputData->D;
+				preProcData->gamma1[NB_index] = 1.;
+				preProcData->gamma2[NB_index] = inputData->D;
 				break;
 			}
+
+			// ----------------------------------------------------------------------------------------------------------------------------------------------------
 		}
 	} // end generating boundary data
-
-	// Creating boundary objects
-	for (int i = 0; i < inputData->nSides; i++)
-	{
-		int boundaryKind = inputData->BoundaryType[i];
-		double boundaryValue = inputData->BCS[i][1];
-		BoundaryObject* boundaryConditionObject = new BoundaryObject(boundaryKind, inputData->D, boundaryValue);
-
-		preProcData->Boundaries.push_back(boundaryConditionObject);
-	}
 
 	// Calculate Average Spacing
 	preProcData->delX = 0.5 * preProcData->delX / sumX;

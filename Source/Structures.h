@@ -25,7 +25,8 @@ enum class collocationStratFlag
 	Global
 };
 
-struct SolutionData; 
+struct SolutionData;
+struct PreprocessorData;
 
 //----------------------------------------------------------------------------------------------------------------------
 /// \brief
@@ -35,9 +36,11 @@ struct SolutionData;
 class BoundaryObject
 {
 public:
-	BoundaryObject(int boundaryKind, double diffusionCoefficient, double boundaryValue);
+	BoundaryObject(int boundaryKind, double diffusionCoefficient, double boundaryValue, double vehicleVolume);
 
-	void ApplyBoundaryCondition(SolutionData& solutionData);
+	void ApplyBoundaryCondition(PreprocessorData* preProcData, SolutionData* solutionData);
+	void AddNode(int index);
+	void AddNormalVectors(double dNx, double dNy);
 
 private:
 	int m_boundaryKind = 0;
@@ -48,6 +51,9 @@ private:
 	double m_gamma1 = 0.;
 	double m_gamma2 = 0.;
 	double m_gamma3 = 0.;
+
+	std::vector<double> m_dNx;
+	std::vector<double> m_dNy;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -76,7 +82,6 @@ struct InputData
 	double K21 = 0.;  // Unbinding Rate Coefficient [1/s]
 	double Vt = 0.;   // Tissue Volume [mL]
 	double Vb = 0.;   // Blood Volume [mL]
-	double Vd = 0.;   // Donor Volume [mL]
 
 	// Time Iteration Data
 	double initialTime;    // Initial time (t_o) of the solution [s],  t = to:dt:tf
