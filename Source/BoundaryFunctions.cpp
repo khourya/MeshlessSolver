@@ -22,8 +22,10 @@ BoundaryObject::BoundaryObject(int boundaryKind, double diffusionCoefficient, do
 	m_volume = vehicleVolume;
 }
 
-void BoundaryObject::ApplyBoundaryCondition(PreprocessorData* preProcData, SolutionData* solutionData)
+int BoundaryObject::ApplyBoundaryCondition(PreprocessorData* preProcData, SolutionData* solutionData)
 {
+	int errorFlag = 0;
+
 	int NB = preProcData->nBoundaryPoints;
 	int indexStart = m_boundaryMemberIndices.front();
 	int indexEnd = m_boundaryMemberIndices.back();
@@ -38,6 +40,21 @@ void BoundaryObject::ApplyBoundaryCondition(PreprocessorData* preProcData, Solut
 		solutionData->c_next[i] = (g3 * range + g2 * solutionData->c_next[NB + i]) / (g1 * range + g2);
 		solutionData->cb_next[i] = (g3 * range + g2 * solutionData->cb_next[NB + i]) / (g1 * range + g2);
 	}
+
+	return errorFlag;
+}
+
+int BoundaryObject::UpdateDonorVolume(PreprocessorData* preProcData, SolutionData* solutionData)
+{
+	int errorFlag = 0;
+
+	for (int j : m_boundaryMemberIndices)
+	{
+		std::cout << j << std::endl;
+	}
+
+
+	return errorFlag;
 }
 
 void BoundaryObject::AddNode(int index)

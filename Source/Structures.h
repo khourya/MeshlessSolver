@@ -38,7 +38,8 @@ class BoundaryObject
 public:
 	BoundaryObject(int boundaryKind, double diffusionCoefficient, double boundaryValue, double vehicleVolume);
 
-	void ApplyBoundaryCondition(PreprocessorData* preProcData, SolutionData* solutionData);
+	int ApplyBoundaryCondition(PreprocessorData* preProcData, SolutionData* solutionData);
+	int UpdateDonorVolume(PreprocessorData* preProcData, SolutionData* solutionData);
 	void AddNode(int index);
 	void AddNormalVectors(double dNx, double dNy);
 

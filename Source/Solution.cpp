@@ -71,19 +71,8 @@ int Solution(bool* checker, InputData* inputData, PreprocessorData* preProcData,
 	// Calculate Boundary Concentrations using Internal Normal Layer
 	for (BoundaryObject* boundary : preProcData->Boundaries)
 	{
-		boundary->ApplyBoundaryCondition(preProcData, solutionData);
+		errorFlag = boundary->ApplyBoundaryCondition(preProcData, solutionData);
 	}
-
-	// for (int i = 0; i < NB; i++)
-	// {
-	// 	double g1 = preProcData->gamma1[i];
-	// 	double g2 = preProcData->gamma2[i];
-	// 	double g3 = preProcData->gamma3[i];
-	// 
-	// 	double range = preProcData->dL[i] / 4.;
-	// 	solutionData->c_next[i] = (g3 * range + g2 * solutionData->c_next[NB + i]) / (g1 * range + g2);
-	// 	solutionData->cb_next[i] = (g3 * range + g2 * solutionData->cb_next[NB + i]) / (g1 * range + g2);
-	// }
 
 	// Update Concentration Vector
 	for (int i = 0; i < NN; i++)
@@ -136,6 +125,12 @@ int Solution(bool* checker, InputData* inputData, PreprocessorData* preProcData,
 		// Unbound
 		solutionData->fTx_bnd[i] *= -inputData->D;
 		solutionData->fTy_bnd[i] *= -inputData->D;
+	}
+
+	// Update vehicle volumes
+	for (BoundaryObject* boundary : preProcData->Boundaries)
+	{
+		errorFlag = boundary->UpdateDonorVolume(preProcData, solutionData);
 	}
 
 	return errorFlag;
