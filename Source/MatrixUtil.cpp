@@ -1,5 +1,7 @@
 #include "Structures.h"
 
+// Logging functions
+
 // 2D double
 void LogMat(const char* c, std::vector<std::vector<double>> A)
 {
@@ -98,4 +100,13 @@ void LogMat(const char* c, std::vector<int> A)
             std::cout << "\t " << A[i] << ",\n";
     }
     // std::cout << c << "[" << i << "][" << j << "]: " << val << std::endl;
+}
+
+
+// Matrix Functions
+int InvertMatrix()
+{
+    int errorFlag = 0;
+
+    return errorFlag;
 }

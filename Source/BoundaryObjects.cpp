@@ -1,25 +1,30 @@
-#include "BoundaryDef.h"
+#include "Structures.h"
 
-BoundaryObject::BoundaryObject(int boundaryKind, double diffusionCoefficient, double boundaryValue, double vehicleVolume) : m_boundaryKind(boundaryKind)
+BoundaryObject::BoundaryObject(int boundaryKind, double diffusionCoefficient, double boundaryValue, double vehicleVolume)
+	: m_boundaryKind(static_cast<boundaryType>(boundaryKind)), m_gamma3(boundaryValue), m_volume(vehicleVolume)
 {
-	switch (boundaryKind)
+	switch (m_boundaryKind)
 	{
-	case 1:
+	case boundaryType::FirstKind:
 		m_gamma1 = 1.;
 		m_gamma2 = 0.;
 		break;
-	case 2:
+	case boundaryType::SecondKind:
 		m_gamma1 = 0.;
 		m_gamma2 = -diffusionCoefficient;
 		break;
-	case 3:
+	case boundaryType::ThirdKind:
+		m_gamma1 = 1.;
+		m_gamma2 = diffusionCoefficient;
+		break;
+	case boundaryType::FiniteVehicle:
 		m_gamma1 = 1.;
 		m_gamma2 = diffusionCoefficient;
 		break;
 	}
 
-	m_gamma3 = boundaryValue;
-	m_volume = vehicleVolume;
+	// m_gamma3 = boundaryValue;
+	// m_volume = vehicleVolume;
 }
 
 int BoundaryObject::ApplyBoundaryCondition(PreprocessorData* preProcData, SolutionData* solutionData)
@@ -44,36 +49,36 @@ int BoundaryObject::ApplyBoundaryCondition(PreprocessorData* preProcData, Soluti
 	return errorFlag;
 }
 
-int BoundaryObject::UpdateDonorVolume(PreprocessorData* preProcData, SolutionData* solutionData)
+int BoundaryObject::UpdateDonorVolume(double dT, PreprocessorData* preProcData, SolutionData* solutionData)
 {
 	int errorFlag = 0;
-	std::vector<double> flux_x1;
-	std::vector<double> flux_y1;
-	// copy(vect1.begin(), vect1.end(), back_inserter(vect2));
 
-	std::vector<double>::const_iterator first = solutionData->fTx_bnd.begin() + m_boundaryMemberIndices.front();
-	std::vector<double>::const_iterator last = solutionData->fTx_bnd.begin() + m_boundaryMemberIndices.back() + 1;
-	std::vector<double> flux_x2(first, last);
+	// We only need to update volumes for boundaries that are of the finite volume type
+	if (m_boundaryKind != boundaryType::FiniteVehicle)
+		return errorFlag;
 
-	first = solutionData->fTx_bnd.begin() + m_boundaryMemberIndices.front();
-	last = solutionData->fTx_bnd.begin() + m_boundaryMemberIndices.back() + 1;
-	std::vector<double> flux_y2(first, last);
-
+	std::vector<double> jDotN_current;
+	std::vector<double> x;
+	std::vector<double> y;
 
 	for (int i : m_boundaryMemberIndices)
 	{
 		double flux_x = solutionData->fTx_bnd[i];
 		double flux_y = solutionData->fTy_bnd[i];
 
-		flux_x1.push_back(flux_x);
-		flux_y1.push_back(flux_y);
-
 		double nX = preProcData->dNx[i];
 		double nY = preProcData->dNy[i];
 
-		flux_x = nX * flux_x;
-		flux_y = nY * flux_y;
+		jDotN_current.push_back(flux_x * nX + flux_y * nY);
+
+		x.push_back(preProcData->Xc[i]);
+		y.push_back(preProcData->Yc[i]);
 	}
+
+	double dMass = 0.;
+	errorFlag = Integrate(dT, x, y, m_jDotN_old, jDotN_current, dMass);
+
+	m_jDotN_old = jDotN_current;
 
 	return errorFlag;
 }

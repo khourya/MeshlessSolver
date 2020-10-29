@@ -54,9 +54,3 @@ void WriteCSV(double NB, std::vector<double> col1, std::vector<double> col2);
 void WriteMatrix(std::vector<std::vector<double>> A, std::vector<const char*> headers);
 void WriteShapeFactors(std::vector<double> factors, std::vector<double> shapeFactors, std::vector<int> nInfluencePoints);
 void LogErrors(int errorFlag);
-
-// Writing out Matrices to Console for Viewing
-void LogMat(const char* c, std::vector<double> A);               // Viewing 1D Vectors
-void LogMat(const char* c, std::vector<int> A);                  // Viewing 1D Vectors
-void LogMat(const char* c, std::vector<std::vector<double>> A);  // Viewing 2D Vectors
-void LogMat(const char* c, std::vector<std::vector<int>> A);     // Viewing 2D Vectors

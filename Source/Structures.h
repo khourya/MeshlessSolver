@@ -8,6 +8,10 @@
 #include <fstream>
 #include <math.h>
 #include <cmath>
+#include "MathUtil.h"
+
+struct PreprocessorData;
+struct SolutionData;
 
 // Enumerator for Node Generation Strategy
 enum class nodeStratFlag
@@ -25,36 +29,12 @@ enum class collocationStratFlag
 	Global
 };
 
-struct SolutionData;
-struct PreprocessorData;
-
-//----------------------------------------------------------------------------------------------------------------------
-/// \brief
-/// Options: Class defining the boundary conditions and containing the functions for implementing BC's
-/// 
-//----------------------------------------------------------------------------------------------------------------------
-class BoundaryObject
+enum class boundaryType
 {
-public:
-	BoundaryObject(int boundaryKind, double diffusionCoefficient, double boundaryValue, double vehicleVolume);
-
-	int ApplyBoundaryCondition(PreprocessorData* preProcData, SolutionData* solutionData);
-	int UpdateDonorVolume(PreprocessorData* preProcData, SolutionData* solutionData);
-	void AddNode(int index);
-	void AddNormalVectors(double dNx, double dNy);
-
-private:
-	int m_boundaryKind = 0;
-	std::vector<int> m_boundaryMemberIndices;
-
-	double m_volume = 0.;
-
-	double m_gamma1 = 0.;
-	double m_gamma2 = 0.;
-	double m_gamma3 = 0.;
-
-	std::vector<double> m_dNx;
-	std::vector<double> m_dNy;
+	FirstKind = 1,
+	SecondKind,
+	ThirdKind,
+	FiniteVehicle
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -101,6 +81,36 @@ struct InputData
 	std::vector<int> BoundaryType;          // Boundary Kind: First (1), Second (2), Third (3)
 	std::vector <std::vector<double> > BCS; // Boundary Value, Either: T_hat, q_hat or Tinfinity_hat 
 	std::vector <std::vector<double> > HBS; // Film Coefficient: T + (k/h)*dT_dn = Tinf. HBS = h, k = diffusion coefficient
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+/// \brief
+/// Options: Class defining the boundary conditions and containing the functions for implementing BC's
+/// 
+//----------------------------------------------------------------------------------------------------------------------
+class BoundaryObject
+{
+public:
+	BoundaryObject(int boundaryKind, double diffusionCoefficient, double boundaryValue, double vehicleVolume);
+
+	int ApplyBoundaryCondition(PreprocessorData* preProcData, SolutionData* solutionData);
+	int UpdateDonorVolume(double dT, PreprocessorData* preProcData, SolutionData* solutionData);
+	void AddNode(int index);
+	void AddNormalVectors(double dNx, double dNy);
+
+private:
+	boundaryType m_boundaryKind = boundaryType::FirstKind;
+	std::vector<int> m_boundaryMemberIndices;
+
+	double m_volume = 0.;
+
+	double m_gamma1 = 0.;
+	double m_gamma2 = 0.;
+	double m_gamma3 = 0.;
+
+	std::vector<double> m_dNx;
+	std::vector<double> m_dNy;
+	std::vector<double> m_jDotN_old;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -75,7 +75,10 @@
     <ClCompile Include="Source\Solution.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\BoundaryFunctions.cpp">
+    <ClCompile Include="Source\MathUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\BoundaryObjects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -100,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="Source\UnitTestUtil.h">
       <Filter>UnitTests</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MathUtil.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

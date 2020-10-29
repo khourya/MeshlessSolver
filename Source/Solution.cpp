@@ -130,7 +130,7 @@ int Solution(bool* checker, InputData* inputData, PreprocessorData* preProcData,
 	// Update vehicle volumes
 	for (BoundaryObject* boundary : preProcData->Boundaries)
 	{
-		errorFlag = boundary->UpdateDonorVolume(preProcData, solutionData);
+		errorFlag = boundary->UpdateDonorVolume(inputData->deltaTime, preProcData, solutionData);
 	}
 
 	return errorFlag;

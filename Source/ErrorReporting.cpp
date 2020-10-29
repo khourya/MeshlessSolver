@@ -37,3 +37,8 @@ void LogErrors(int errorFlag)
 // Collocation = [-4000, -4999]
 // std::cout << endl << "Collocation strategy pointer is null." << endl;
 // errorFlag = -4000;
+
+
+// Solution = [-5000, -5999]
+// std::cout << endl << "Integration vectors are not the same size." << endl;
+// errorFlag = -5001;
