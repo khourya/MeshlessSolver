@@ -18,12 +18,12 @@ bool Test::ExpectEq(double expectedSolution, double actualSolution, const char* 
 	return isEqual;
 }
 
-bool Test::ExpectNear(double expectedSolution, double actualSolution, const char* testName)
+bool Test::ExpectNear(double expectedSolution, double actualSolution, double tol, const char* testName)
 {
 	bool isNear = true;
 	double diff = std::abs(expectedSolution - actualSolution);
 
-	if (diff > Test::tinyTol)
+	if (diff > tol * expectedSolution / 100)
 		isNear = false;
 
 	Test::TestAssert(isNear, testName);

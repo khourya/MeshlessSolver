@@ -22,6 +22,13 @@ int Solver(bool* checker, InputData* inputData, PreprocessorData* preProcData, C
 	// Iterating through solution
 	for (int N = 1; N <= inputData->nSteps; N++)
 	{
+		int littleN = 0;
+
+		if (N == inputData->nSteps)
+		{
+			littleN = N;
+		}
+
 		errorFlag = Solution(checker, inputData, preProcData, collocationData, interpolationVectors, solutionData);
 
 		double t = N*inputData->deltaTime + inputData->initialTime;

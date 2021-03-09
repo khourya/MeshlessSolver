@@ -72,8 +72,14 @@ void WriteShapeFactors(std::vector<double> factors, std::vector<double> shapeFac
 
 void WriteOutput(double step, double time, PreprocessorData* preProcData, SolutionData* solutionData)
 {
-	const std::string outputFile = "Data\\LCMMOutput.txt";
-	std::vector<const char*> headers = { "Step", "Time [s]", "X", "Y", "Concentration", "Fx", "Fy" };
+	WriteUnbound(step, time, preProcData, solutionData);
+	WriteBound(step, time, preProcData, solutionData);
+}
+
+void WriteUnbound(double step, double time, PreprocessorData* preProcData, SolutionData* solutionData)
+{
+	const std::string outputFile = "Data\\LCMMUnboundSolution.txt";
+	std::vector<const char*> headers = { "Step", "Time [s]", "N", "X", "Y", "Concentration", "Fx", "Fy" };
 	std::ofstream myFile;
 
 	// If first time step: clear file, write headers, write data
@@ -97,10 +103,12 @@ void WriteOutput(double step, double time, PreprocessorData* preProcData, Soluti
 		{
 			if (i < preProcData->nBoundaryPoints)
 			{
+				// Writes as: Step | Time | Index | Xc | Yc | Concentration | Flux_x | Flux_y
 				myFile << step << "," << time << "," << i + 1 << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cT_bnd[i] << "," << solutionData->fTx_bnd[i] << "," << solutionData->fTy_bnd[i] << endl;
 			}
 			else
 			{
+				// Writes as: Step | Time | Index | Xc | Yc | Concentration | Flux_x | Flux_y
 				myFile << step << "," << time << "," << i + 1 - preProcData->nBoundaryPoints << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cT_int[i] << "," << solutionData->fTx_int[i] << "," << solutionData->fTy_int[i] << endl;
 			}
 		}
@@ -122,6 +130,67 @@ void WriteOutput(double step, double time, PreprocessorData* preProcData, Soluti
 			else
 			{
 				myFile << step << "," << time << "," << i + 1 - preProcData->nBoundaryPoints << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cT_int[i] << "," << solutionData->fTx_int[i] << "," << solutionData->fTy_int[i] << endl;
+			}
+		}
+	}
+
+	myFile.close();
+}
+
+void WriteBound(double step, double time, PreprocessorData* preProcData, SolutionData* solutionData)
+{
+	const std::string outputFile = "Data\\LCMMBoundSolution.txt";
+	std::vector<const char*> headers = { "Step", "Time [s]", "N", "X", "Y", "Concentration" };
+	std::ofstream myFile;
+
+	// If first time step: clear file, write headers, write data
+	if (step == 0)
+	{
+		// Open as new file
+		myFile.open(outputFile, std::ios::out);
+
+		// Writing Headers
+		size_t I = headers.size();
+		for (size_t i = 0; i < I; i++)
+		{
+			if (i == I - 1)
+				myFile << headers[i] << "\n";
+			else
+				myFile << headers[i] << ",";
+		}
+
+		// Writing Data
+		for (int i = 0; i < preProcData->nInternalPoints; i++)
+		{
+			if (i < preProcData->nBoundaryPoints)
+			{
+				// Writes as: Step | Time | Index | Xc | Yc | Concentration | <No Fluxes>
+				myFile << step << "," << time << "," << i + 1 << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cB_bnd[i] << endl;
+			}
+			else
+			{
+				myFile << step << "," << time << "," << i + 1 - preProcData->nBoundaryPoints << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cB_int[i] << endl;
+			}
+		}
+
+	}
+	// Otherwise just append data to the file
+	else
+	{
+		// Open for appending
+		myFile.open(outputFile, std::ios::app);
+
+		// Writing Data
+		for (int i = 0; i < preProcData->nInternalPoints; i++)
+		{
+			if (i < preProcData->nBoundaryPoints)
+			{
+				// Writes as: Step | Time | Index | Xc | Yc | Concentration | <No Fluxes>
+				myFile << step << "," << time << "," << i + 1 << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cB_bnd[i] << endl;
+			}
+			else
+			{
+				myFile << step << "," << time << "," << i + 1 - preProcData->nBoundaryPoints << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cB_int[i] << endl;
 			}
 		}
 	}

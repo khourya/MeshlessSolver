@@ -10,7 +10,7 @@ int main()
     // Boolean for checking stuff
     bool checker = false;
     bool runUnitTests = true;
-    bool runCode = true;
+    bool runCode = false;
 
     // Intro Message ----------------------------------------------------------------------------------
     std::cout << "Localized RBF Collocation Meshless Method" << std::endl;

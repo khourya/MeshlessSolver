@@ -1,6 +1,6 @@
 #include "Structures.h"
 
-BoundaryObject::BoundaryObject(int boundaryKind, double diffusionCoefficient, double boundaryValue, double vehicleVolume)
+BoundaryObject::BoundaryObject(int boundaryKind, int NS, double diffusionCoefficient, double boundaryValue, double vehicleVolume)
 	: m_boundaryKind(static_cast<boundaryType>(boundaryKind)), m_gamma3(boundaryValue), m_volume(vehicleVolume)
 {
 	switch (m_boundaryKind)
@@ -23,8 +23,8 @@ BoundaryObject::BoundaryObject(int boundaryKind, double diffusionCoefficient, do
 		break;
 	}
 
-	// m_gamma3 = boundaryValue;
-	// m_volume = vehicleVolume;
+	m_jDotN_old = std::vector<double>(NS, 0.);
+
 }
 
 int BoundaryObject::ApplyBoundaryCondition(PreprocessorData* preProcData, SolutionData* solutionData)
@@ -75,8 +75,12 @@ int BoundaryObject::UpdateDonorVolume(double dT, PreprocessorData* preProcData, 
 		y.push_back(preProcData->Yc[i]);
 	}
 
+
+	// Account for mass of compound that has diffused into solution:
 	double dMass = 0.;
 	errorFlag = Integrate(dT, x, y, m_jDotN_old, jDotN_current, dMass);
+
+	m_gamma3 = m_gamma3 - dMass / m_volume;
 
 	m_jDotN_old = jDotN_current;
 

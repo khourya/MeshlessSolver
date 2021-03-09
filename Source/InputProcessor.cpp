@@ -156,7 +156,7 @@ int ReadInputs(bool* checker, InputData* inputData, PreprocessorData* preProcDat
 
         // Creating boundary objects
         double boundaryValue = inputData->BCS[i][1]; // alternatively, x2, or might reduce to "simple" boundaries?
-        BoundaryObject* boundaryConditionObject = new BoundaryObject(boundaryKind, inputData->D, boundaryValue, vehicleVolume);
+        BoundaryObject* boundaryConditionObject = new BoundaryObject(boundaryKind, inputData->NPS[i], inputData->D, boundaryValue, vehicleVolume);
 
         preProcData->Boundaries.push_back(boundaryConditionObject);
 

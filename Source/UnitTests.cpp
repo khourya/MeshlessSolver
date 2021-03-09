@@ -11,6 +11,13 @@ bool RunUnitTests()
 	passedTest = LUUnitTests::TestLUDecomp();
 	passedTest = LUUnitTests::TestLUBacksub();
 	passedTest = LUUnitTests::TestLU4x4();
+
+	passedTest = MathUtilTests::TestIntegration_ConstantField();
+	passedTest = MathUtilTests::TestIntegration_LinearField();
+	passedTest = MathUtilTests::TestIntegration_PentagonalPrism();
+	passedTest = MathUtilTests::TestIntegration_2DEdge();
+	passedTest = MathUtilTests::TestIntegration_IrregularPrism();
+
 	if (!passedTest)
 		return passedTest;
 
@@ -208,6 +215,207 @@ namespace LUUnitTests
 
 		std::cout << "Inverse of 4x4" << std::endl;
 		LogMat("Ai", Ai);
+
+		return passed;
+	}
+}
+
+namespace MathUtilTests
+{
+	double tol = 1.; // percent
+
+	bool TestIntegration_ConstantField()
+	{
+		bool passed = true;
+		int errorFlag = 0;
+
+		double Length = 10.;
+		double dT = 0.1;
+		int vecSize = 101;
+
+		// Constant value over time and space
+		std::vector<double> F(vecSize, 2.);
+		std::vector<double> x(vecSize, 0.);
+		std::vector<double> y(vecSize, 0.);
+
+		for (int i = 0; i < vecSize; i++)
+		{
+			x[i] = i * (Length / (vecSize - 1));
+		}
+
+		double actualSolution_1 = 0.;
+		double actualSolution_2 = 0.;
+		double expectedSolution = 2.;
+
+		errorFlag = Integrate(dT, x, y, F, F, actualSolution_2);
+		passed = Test::ExpectNear(expectedSolution, actualSolution_1, tol, "Integration: Linearly Increasing: Prism");
+		passed = Test::ExpectNear(expectedSolution, actualSolution_2, tol, "Integration: Linearly Increasing: Trap");
+
+		if (errorFlag != 0)
+			passed = false;
+
+		return passed;
+	}
+
+	bool TestIntegration_LinearField()
+	{
+		bool passed = true;
+		int errorFlag = 0;
+
+		double Length = 10.;
+		double maxVal = 15.;
+		double minVal = 3.;
+		double dT = 0.5;
+		int vecSize = 101;
+
+		// Constant value over time and space
+		std::vector<double> F(vecSize, 0.);
+		std::vector<double> x(vecSize, 0.);
+		std::vector<double> y(vecSize, 0.);
+
+		for (int i = 0; i < vecSize; i++)
+		{
+			x[i] = i * (Length / (vecSize - 1));
+			F[i] = i * ((maxVal - minVal) / (vecSize - 1)) + minVal;
+		}
+
+		double actualSolution_1 = 0.;
+		double actualSolution_2 = 0.;
+		double expectedSolution = 45.;
+
+		errorFlag = Integrate(dT, x, y, F, F, actualSolution_2);
+		passed = Test::ExpectNear(expectedSolution, actualSolution_1, tol, "Integration: Linearly Increasing then Decreasing: Prism");
+		passed = Test::ExpectNear(expectedSolution, actualSolution_2, tol, "Integration: Linearly Increasing then Decreasing: Trap");
+
+		if (errorFlag != 0)
+			passed = false;
+
+		return passed;
+	}
+
+	bool TestIntegration_PentagonalPrism()
+	{
+		bool passed = true;
+		int errorFlag = 0;
+
+		// x-dim
+		double Length = 10.;
+		int vecSize = 101;
+		double dT = 0.5;
+
+		double maxVal = 15.;
+		double minVal = 5.;
+
+		// Constant value over time and space
+		std::vector<double> x(vecSize, 0.);
+		std::vector<double> y(vecSize, 0.);
+		std::vector<double> F(vecSize, 0.);
+
+		for (int i = 0; i < vecSize; i++)
+		{
+			x[i] = i * (Length / (vecSize - 1));
+		}
+
+		int mp = (vecSize - 1) / 2;
+		for (int i = 0; i <= mp; i++)
+		{	
+			double value = (mp - i) * ((maxVal - minVal) / mp) + minVal;
+
+			F[mp + i] = value;
+			F[mp - i] = value;
+		}
+
+		double actualSolution_1 = 0.;
+		double actualSolution_2 = 0.;
+		double expectedSolution = 50.;
+
+		errorFlag = Integrate(dT, x, y, F, F, actualSolution_2);
+		passed = Test::ExpectNear(expectedSolution, actualSolution_1, tol, "Integration: Pentagonal Prism: Prism");
+		passed = Test::ExpectNear(expectedSolution, actualSolution_2, tol, "Integration: Pentagonal Prism: Trap");
+
+		if (errorFlag != 0)
+			passed = false;
+
+		return passed;
+	}
+
+	bool TestIntegration_2DEdge()
+	{
+		bool passed = true;
+		int errorFlag = 0;
+
+		// x-dim
+		double length_X = 3.;
+		double length_Y = 4.;
+		int vecSize = 101;
+		double dT = 5.;
+
+		double maxVal = 15.;
+		double minVal = 5.;
+
+		// Constant value over time and space
+		std::vector<double> x(vecSize, 0.);
+		std::vector<double> y(vecSize, 0.);
+		std::vector<double> F(vecSize, 10.);
+
+		for (int i = 0; i < vecSize; i++)
+		{
+			x[i] = i * (length_X / (vecSize - 1));
+			y[i] = i * (length_Y / (vecSize - 1));
+		}
+
+		double actualSolution_1 = 0.;
+		double actualSolution_2 = 0.;
+		double expectedSolution = 250.;
+
+		errorFlag = Integrate(dT, x, y, F, F, actualSolution_2);
+		passed = Test::ExpectNear(expectedSolution, actualSolution_1, tol, "Integration: 2D Geometrical Edge: Prism");
+		passed = Test::ExpectNear(expectedSolution, actualSolution_2, tol, "Integration: 2D Geometrical Edge: Trap");
+
+		if (errorFlag != 0)
+			passed = false;
+
+		return passed;
+	}
+
+	bool TestIntegration_IrregularPrism()
+	{
+		bool passed = true;
+		int errorFlag = 0;
+
+		double length = 30.;
+		int vecSize = 101;
+		double dT = 20.;
+
+		double max_0 = 30.;
+		double min_0 = 15.;
+		double max_1 = 40.;
+		double min_1 = 20.;
+
+		// Constant value over time and space
+		std::vector<double> x(vecSize, 0.);
+		std::vector<double> y(vecSize, 0.);
+		std::vector<double> F0(vecSize, 0.);
+		std::vector<double> F1(vecSize, 0.);
+
+		for (int i = 0; i < vecSize; i++)
+		{
+			x[i] = i * (length / (vecSize - 1));
+			F0[i] = i * (max_0 - min_0) / (vecSize - 1) + min_0;
+			F1[i] = i * (max_1 - min_1) / (vecSize - 1) + min_1;
+		}
+
+		double actualSolution_1 = 0.;
+		double actualSolution_2 = 0.;
+		double expectedSolution = 15500.;
+
+		errorFlag = Integrate(dT, x, y, F0, F1, actualSolution_2);
+		passed = Test::ExpectNear(expectedSolution, actualSolution_1, tol, "Integration: Irregular Prism: Prism");
+		passed = Test::ExpectNear(expectedSolution, actualSolution_2, tol, "Integration: Irregular Prism: Trap");
+
+
+		if (errorFlag != 0)
+			passed = false;
 
 		return passed;
 	}

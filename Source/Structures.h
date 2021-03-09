@@ -91,7 +91,7 @@ struct InputData
 class BoundaryObject
 {
 public:
-	BoundaryObject(int boundaryKind, double diffusionCoefficient, double boundaryValue, double vehicleVolume);
+	BoundaryObject(int boundaryKind, int NS, double diffusionCoefficient, double boundaryValue, double vehicleVolume);
 
 	int ApplyBoundaryCondition(PreprocessorData* preProcData, SolutionData* solutionData);
 	int UpdateDonorVolume(double dT, PreprocessorData* preProcData, SolutionData* solutionData);

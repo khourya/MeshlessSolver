@@ -11,4 +11,9 @@ void LogMat(const char* c, std::vector<std::vector<int>> A);     // Viewing 2D V
 int InvertMatrix();
 
 // Math Functions
-int Integrate(double dt, std::vector<double> x, std::vector<double> y, std::vector<double> f0, std::vector<double> f1, double& dMass);
+double VolumeTruncatedRightTriangularPrism(double dx, double dy, double s1, double s2, double s3, double s4);
+double VolumeTruncatedRightSquarePrism(double dx, double dy, double s1, double s2, double s3, double s4);
+int Integrate(double dt, std::vector<double> x, std::vector<double> y, std::vector<double> s0, std::vector<double> s1, double & dResult);
+
+// Vector Functions
+std::vector<double> CrossProduct(std::vector<double> a, std::vector<double> b);
