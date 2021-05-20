@@ -49,6 +49,7 @@
     <ClInclude Include="Source\Parameters.h" />
     <ClInclude Include="Source\PhysicalConstants.h" />
     <ClInclude Include="Source\Structures.h" />
+    <ClInclude Include="Source\Triangulate.h" />
     <ClInclude Include="Source\UnitTestUtil.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

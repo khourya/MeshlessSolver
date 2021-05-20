@@ -1,6 +1,6 @@
 #include "MeshlessSolver.h"
 
-int Solver(bool* checker, InputData* inputData, PreprocessorData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors, SolutionData* solutionData)
+int Solver(bool* checker, InputData* inputData, GeometricData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors, SolutionData* solutionData)
 {
 	int errorFlag = 0;
 
@@ -43,7 +43,7 @@ int Solver(bool* checker, InputData* inputData, PreprocessorData* preProcData, C
 	return errorFlag;
 }
 
-int Solution(bool* checker, InputData* inputData, PreprocessorData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors, SolutionData* solutionData)
+int Solution(bool* checker, InputData* inputData, GeometricData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors, SolutionData* solutionData)
 {
 	int errorFlag = 0;
 

@@ -1,6 +1,6 @@
 #include "MeshlessSolver.h"
 
-int Collocation(bool* checker, Options* options, PreprocessorData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors)
+int Collocation(bool* checker, Options* options, GeometricData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors)
 {
 	int errorFlag = 0;
 

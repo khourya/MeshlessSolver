@@ -2,7 +2,7 @@
 
 #include "MeshlessSolver.h"
 
-int PreprocessDomain(bool* checker, Options* options, InputData* inputData, PreprocessorData* preProcData, SolutionData* solution)
+int PreprocessDomain(bool* checker, Options* options, InputData* inputData, GeometricData* geometricData, SolutionData* solution)
 {
 	int errorFlag = 0;  // error reporting flag
 
@@ -27,9 +27,9 @@ int PreprocessDomain(bool* checker, Options* options, InputData* inputData, Prep
 	{
 		for (int j = 0; j < inputData->NPS[i]; j++)
 		{
-			preProcData->nBoundaryPoints++;
+			geometricData->nBoundaryPoints++;
 			if (*checker)
-				LogBoundaryPoints(i, j, preProcData->nBoundaryPoints);
+				LogBoundaryPoints(i, j, geometricData->nBoundaryPoints);
 			
 			s1 = -1. + 2. * (static_cast<double>(j + 1) - 1.)  / static_cast<double>(inputData->NPS[i]);
 			s2 = -1. + 2. * (static_cast<double>(j + 1) - 0.5) / static_cast<double>(inputData->NPS[i]);
@@ -59,8 +59,8 @@ int PreprocessDomain(bool* checker, Options* options, InputData* inputData, Prep
 			std::vector<double> xRow = { x1, x2, x3 };
 			std::vector<double> yRow = { y1, y2, y3 };
 
-			preProcData->X.push_back(xRow);
-			preProcData->Y.push_back(yRow);
+			geometricData->X.push_back(xRow);
+			geometricData->Y.push_back(yRow);
 
 			double dX = x3 - x1;
 			double dY = y3 - y1;
@@ -70,39 +70,39 @@ int PreprocessDomain(bool* checker, Options* options, InputData* inputData, Prep
 			double dNormalX = dY / dL;
 			double dNormalY = -dX / dL;
 
-			preProcData->dL.push_back(dL);
-			preProcData->dNx.push_back(dNormalX);
-			preProcData->dNy.push_back(dNormalY);
-			preProcData->delX += dL * dispX;
-			preProcData->delY += dL * dispY;
+			geometricData->dL.push_back(dL);
+			geometricData->dNx.push_back(dNormalX);
+			geometricData->dNy.push_back(dNormalY);
+			geometricData->delX += dL * dispX;
+			geometricData->delY += dL * dispY;
 			sumX += dispX;
 			sumY += dispY;
 
-			int NB_index = preProcData->nBoundaryPoints - 1;
-			preProcData->Boundaries[i]->AddNode(NB_index);
-			preProcData->Boundaries[i]->AddNormalVectors(dNormalX, dNormalY);
+			int NB_index = geometricData->nBoundaryPoints - 1;
+			geometricData->Boundaries[i]->AddNode(NB_index);
+			geometricData->Boundaries[i]->AddNormalVectors(dNormalX, dNormalY);
 
 			// Might be able to pop this soon: --------------------------------------------------------------------------------------------------------------------
 			double BC = inputData->BCS[i][0] * (s2) * (s2 - 1.) / 2. + inputData->BCS[i][1] * (1. + s2) * (1. - s2) + inputData->BCS[i][2] * (s2) * (s2 + 1.) / 2.;
 			double HB = inputData->HBS[i][0] * (s2) * (s2 - 1.) / 2. + inputData->HBS[i][1] * (1. + s2) * (1. - s2) + inputData->HBS[i][2] * (s2) * (s2 + 1.) / 2.;
 
-			preProcData->gamma1.push_back(0.);
-			preProcData->gamma2.push_back(0.);
-			preProcData->gamma3.push_back(BC);
+			geometricData->gamma1.push_back(0.);
+			geometricData->gamma2.push_back(0.);
+			geometricData->gamma3.push_back(BC);
 
 			switch (inputData->BoundaryType[i])
 			{
 			case 1:
-				preProcData->gamma1[NB_index] = 1.;
-				preProcData->gamma2[NB_index] = 0.;
+				geometricData->gamma1[NB_index] = 1.;
+				geometricData->gamma2[NB_index] = 0.;
 				break;
 			case 2:
-				preProcData->gamma1[NB_index] = 0.;
-				preProcData->gamma2[NB_index] = -inputData->D;
+				geometricData->gamma1[NB_index] = 0.;
+				geometricData->gamma2[NB_index] = -inputData->D;
 				break;
 			case 3:
-				preProcData->gamma1[NB_index] = 1.;
-				preProcData->gamma2[NB_index] = inputData->D;
+				geometricData->gamma1[NB_index] = 1.;
+				geometricData->gamma2[NB_index] = inputData->D;
 				break;
 			}
 
@@ -111,8 +111,8 @@ int PreprocessDomain(bool* checker, Options* options, InputData* inputData, Prep
 	} // end generating boundary data
 
 	// Calculate Average Spacing
-	preProcData->delX = 0.5 * preProcData->delX / sumX;
-	preProcData->delY = 0.5 * preProcData->delY / sumY;
+	geometricData->delX = 0.5 * geometricData->delX / sumX;
+	geometricData->delY = 0.5 * geometricData->delY / sumY;
 
 	// Calculating extents of domain (x-min/max and y-min/max)
 	for (int i = 0; i < inputData->nSides; i++)
@@ -120,41 +120,49 @@ int PreprocessDomain(bool* checker, Options* options, InputData* inputData, Prep
 		for (int j = 0; j < 3; j++)
 		{
 			// Updated xmax
-			if (inputData->XS[i][j] > preProcData->xmax)
+			if (inputData->XS[i][j] > geometricData->xmax)
 			{
-				preProcData->xmax = inputData->XS[i][j];
+				geometricData->xmax = inputData->XS[i][j];
 			}
 
 			// Updated xmin
-			if (inputData->XS[i][j] < preProcData->xmin)
+			if (inputData->XS[i][j] < geometricData->xmin)
 			{
-				preProcData->xmin = inputData->XS[i][j];
+				geometricData->xmin = inputData->XS[i][j];
 			}
 
 			// Updated ymax
-			if (inputData->YS[i][j] > preProcData->ymax)
+			if (inputData->YS[i][j] > geometricData->ymax)
 			{
-				preProcData->ymax = inputData->YS[i][j];
+				geometricData->ymax = inputData->YS[i][j];
 			}
 
 			// Updated ymin
-			if (inputData->YS[i][j] < preProcData->ymin)
+			if (inputData->YS[i][j] < geometricData->ymin)
 			{
-				preProcData->ymin = inputData->YS[i][j];
+				geometricData->ymin = inputData->YS[i][j];
 			}
 
 		}
 	}
 	if (*checker)
-		LogDomainExtents(preProcData->xmin, preProcData->xmax,
-			             preProcData->ymin, preProcData->ymax);
+		LogDomainExtents(geometricData->xmin, geometricData->xmax,
+			             geometricData->ymin, geometricData->ymax);
 
 	// Distribute Boundary, Normal Layer and Internal Points
 	// Boundary Nodes
-	for (int i = 0; i < preProcData->nBoundaryPoints; i++)
+	for (int i = 0; i < geometricData->nBoundaryPoints; i++)
 	{
-		preProcData->Xc.push_back(preProcData->X[i][1]);
-		preProcData->Yc.push_back(preProcData->Y[i][1]);
+		double x = geometricData->X[i][1];
+		double y = geometricData->Y[i][1];
+
+		geometricData->Xc.push_back(x);
+		geometricData->Yc.push_back(y);
+
+		Point* point = new Point(x, y);
+		point->SetIndex(i);
+		point->SetPointClassification(PointClassification::Boundary);
+		geometricData->AddPoint(point);
 	}
 
 	// Corner Nodes, I think unnecessary
@@ -165,10 +173,18 @@ int PreprocessDomain(bool* checker, Options* options, InputData* inputData, Prep
 	// }
 
 	// Internal Layer of Nodes Normal to Boundary nodes
-	for (int i = 0; i < preProcData->nBoundaryPoints; i++)
+	for (int i = 0; i < geometricData->nBoundaryPoints; i++)
 	{	
-		preProcData->Xc.push_back(preProcData->X[i][1] - preProcData->dL[i] * preProcData->dNx[i] / 4.);
-		preProcData->Yc.push_back(preProcData->Y[i][1] - preProcData->dL[i] * preProcData->dNy[i] / 4.);
+		double x = geometricData->X[i][1] - geometricData->dL[i] * geometricData->dNx[i] / 4.;
+		double y = geometricData->Y[i][1] - geometricData->dL[i] * geometricData->dNy[i] / 4.;
+
+		geometricData->Xc.push_back(x);
+		geometricData->Yc.push_back(y);
+		
+		Point* point = new Point(x, y);
+		point->SetIndex(i);
+		point->SetPointClassification(PointClassification::Interior);
+		geometricData->AddPoint(point);
 	}
 
 	// Generating Internal Nodes
@@ -183,47 +199,47 @@ int PreprocessDomain(bool* checker, Options* options, InputData* inputData, Prep
 		return errorFlag;
 	}
 
-	errorFlag = nodeGenerator.m_nodeStrategy->generateNodes(checker, preProcData);
+	errorFlag = nodeGenerator.m_nodeStrategy->generateNodes(checker, geometricData);
 
 	// Shift Boundary Points and Normals to Element End-Node
-	for (int j = 0; j < preProcData->nBoundaryPoints; j++)
+	for (int j = 0; j < geometricData->nBoundaryPoints; j++)
 	{
-		preProcData->Xc[j] = preProcData->X[j][0];
-		preProcData->Yc[j] = preProcData->Y[j][0];
+		geometricData->Xc[j] = geometricData->X[j][0];
+		geometricData->Yc[j] = geometricData->Y[j][0];
 		double distMin = 1.e10;
-		for (int i = 0; i < preProcData->nBoundaryPoints; i++)
+		for (int i = 0; i < geometricData->nBoundaryPoints; i++)
 		{
 			int iMin = 0;
-			double distX = preProcData->Xc[j] - preProcData->X[i][2];
-			double distY = preProcData->Yc[j] - preProcData->Y[i][2];
+			double distX = geometricData->Xc[j] - geometricData->X[i][2];
+			double distY = geometricData->Yc[j] - geometricData->Y[i][2];
 			double dist = std::sqrt(distX * distX + distY * distY);
 			if (dist < distMin)
 			{
 				distMin = dist;
 				iMin = i;
 			}
-			double dNxt_t_local = (preProcData->dNx[j] + preProcData->dNx[iMin]) / 2.;
-			double dNyt_t_local = (preProcData->dNy[j] + preProcData->dNy[iMin]) / 2.;
+			double dNxt_t_local = (geometricData->dNx[j] + geometricData->dNx[iMin]) / 2.;
+			double dNyt_t_local = (geometricData->dNy[j] + geometricData->dNy[iMin]) / 2.;
 			double d2 = std::sqrt(dNxt_t_local * dNxt_t_local + dNyt_t_local * dNyt_t_local);
-			preProcData->dNx_t.push_back(dNxt_t_local/d2);
-			preProcData->dNy_t.push_back(dNyt_t_local/d2);
+			geometricData->dNx_t.push_back(dNxt_t_local/d2);
+			geometricData->dNy_t.push_back(dNyt_t_local/d2);
 		}
 	}
 
 	// Perform Triangulation of the Point Distribution
-	errorFlag = Triangulate(checker, preProcData);
+	errorFlag = Triangulate(checker, geometricData);
 
 	// Shift boundary points back to element center
-	for (int i = 0; i < preProcData->nBoundaryPoints; i++)
+	for (int i = 0; i < geometricData->nBoundaryPoints; i++)
 	{
-		preProcData->Xc[i] = preProcData->X[i][1];
-		preProcData->Yc[i] = preProcData->Y[i][1];
+		geometricData->Xc[i] = geometricData->X[i][1];
+		geometricData->Yc[i] = geometricData->Y[i][1];
 	}
 
 	// Prescribe Initial Condition
-	SetInitialCondition(preProcData->nBoundaryPoints, preProcData->nInternalPoints, solution);
+	SetInitialCondition(geometricData->nBoundaryPoints, geometricData->nInternalPoints, solution);
 
-	WriteCSV(preProcData->nBoundaryPoints, preProcData->Xc, preProcData->Yc);
+	WriteCSV(geometricData->nBoundaryPoints, geometricData->Xc, geometricData->Yc);
 	return errorFlag;
 }
 

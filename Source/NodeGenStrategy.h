@@ -22,7 +22,7 @@ class NodeGenStrategy
 {
 public:
 	virtual ~NodeGenStrategy() {};
-	virtual int generateNodes(bool* checker, PreprocessorData* preProcData) = 0;
+	virtual int generateNodes(bool* checker, GeometricData* preProcData) = 0;
 	virtual void displayStrat() = 0;
 
 };
@@ -31,14 +31,14 @@ class StandardGeneration : public NodeGenStrategy
 {
 public:
 	void displayStrat() override;
-	int generateNodes(bool* checker, PreprocessorData* preProcData) override;
+	int generateNodes(bool* checker, GeometricData* preProcData) override;
 };
 
 class RavelGeneration : public NodeGenStrategy
 {
 public:
 	void displayStrat() override;
-	int generateNodes(bool* checker, PreprocessorData* preProcData) override;
+	int generateNodes(bool* checker, GeometricData* preProcData) override;
 };
 
 class NodeGenerator

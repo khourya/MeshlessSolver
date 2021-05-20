@@ -6,7 +6,7 @@ void GlobalCollocation::displayStrat()
 	std::cout << "Implementing global collocation." << endl;
 }
 
-int GlobalCollocation::Topology(bool* checker, PreprocessorData* preProcData, CollocationData* topologyData)
+int GlobalCollocation::Topology(bool* checker, GeometricData* preProcData, CollocationData* topologyData)
 {
 	int errorFlag = 0;
 
@@ -20,7 +20,7 @@ int GlobalCollocation::Topology(bool* checker, PreprocessorData* preProcData, Co
 	return errorFlag;
 }
 
-int GlobalCollocation::Collocate(bool* checker, PreprocessorData* preProcData, CollocationData* topologyData, InterpolationVectors* interpolationVectors)
+int GlobalCollocation::Collocate(bool* checker, GeometricData* preProcData, CollocationData* topologyData, InterpolationVectors* interpolationVectors)
 {
 	int errorFlag = 0;
 	return errorFlag;

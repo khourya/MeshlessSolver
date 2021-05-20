@@ -29,7 +29,7 @@
 ///
 /// _PUT_DETAILED_DESCRIPTION_HERE_
 //----------------------------------------------------------------------------------------------------------------------
-int ReadInputs(bool* checker, InputData* inputData, PreprocessorData* preProcData)
+int ReadInputs(bool* checker, InputData* inputData, GeometricData* geometricData)
 {
     int errorFlag = 0;
     int nBoundaryPoints = 0;
@@ -158,7 +158,7 @@ int ReadInputs(bool* checker, InputData* inputData, PreprocessorData* preProcDat
         double boundaryValue = inputData->BCS[i][1]; // alternatively, x2, or might reduce to "simple" boundaries?
         BoundaryObject* boundaryConditionObject = new BoundaryObject(boundaryKind, inputData->NPS[i], inputData->D, boundaryValue, vehicleVolume);
 
-        preProcData->Boundaries.push_back(boundaryConditionObject);
+        geometricData->Boundaries.push_back(boundaryConditionObject);
 
     }
 

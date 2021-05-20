@@ -23,7 +23,7 @@ void StandardGeneration::displayStrat()
 	std::cout << "Implementing standard internal node generation method." << endl;
 }
 
-int StandardGeneration::generateNodes(bool* checker, PreprocessorData* preProcData)
+int StandardGeneration::generateNodes(bool* checker, GeometricData* preProcData)
 {
 	int errorFlag = 0;
 
@@ -80,13 +80,13 @@ void RavelGeneration::displayStrat()
 	std::cout << "Implementing Ravel internal node generation method." << endl;
 }
 
-int RavelGeneration::generateNodes(bool* checker, PreprocessorData* preProcData)
+int RavelGeneration::generateNodes(bool* checker, GeometricData* preProcData)
 {
 	int errorFlag = 0;
 	return errorFlag;
 }
 
-bool isInsideDomain(double xi, double yi, PreprocessorData* preProcData)
+bool isInsideDomain(double xi, double yi, GeometricData* preProcData)
 {
 	bool inside = true;
 
@@ -109,7 +109,7 @@ bool isInsideDomain(double xi, double yi, PreprocessorData* preProcData)
 	return inside;
 }
 
-bool isOnEdge(double xi, double yi, PreprocessorData* preProcData)
+bool isOnEdge(double xi, double yi, GeometricData* preProcData)
 {
 	bool onEdge = false;
 	if (xi == preProcData->xmin)

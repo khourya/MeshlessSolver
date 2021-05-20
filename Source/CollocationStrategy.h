@@ -22,8 +22,8 @@ class CollocationStrategy
 {
 public:
 	virtual ~CollocationStrategy() {};
-	virtual int Collocate(bool* checker, PreprocessorData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors) = 0;
-	virtual int Topology(bool* checker, PreprocessorData* preProcData, CollocationData* collocationData) = 0;
+	virtual int Collocate(bool* checker, GeometricData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors) = 0;
+	virtual int Topology(bool* checker, GeometricData* preProcData, CollocationData* collocationData) = 0;
 	virtual void displayStrat() = 0;
 
 };
@@ -32,24 +32,24 @@ class StdLocalCollocation : public CollocationStrategy
 {
 public:
 	void displayStrat() override;
-	int Collocate(bool* checker, PreprocessorData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors) override;
-	int Topology(bool* checker, PreprocessorData* preProcData, CollocationData* collocationData) override;
+	int Collocate(bool* checker, GeometricData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors) override;
+	int Topology(bool* checker, GeometricData* preProcData, CollocationData* collocationData) override;
 };
 
 class PAugLocalCollocation : public CollocationStrategy
 {
 public:
 	void displayStrat() override;
-	int Collocate(bool* checker, PreprocessorData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors) override;
-	int Topology(bool* checker, PreprocessorData* preProcData, CollocationData* collocationData) override;
+	int Collocate(bool* checker, GeometricData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors) override;
+	int Topology(bool* checker, GeometricData* preProcData, CollocationData* collocationData) override;
 };
 
 class GlobalCollocation : public CollocationStrategy
 {
 public:
 	void displayStrat() override;
-	int Collocate(bool* checker, PreprocessorData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors) override;
-	int Topology(bool* checker, PreprocessorData* preProcData, CollocationData* collocationData) override;
+	int Collocate(bool* checker, GeometricData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors) override;
+	int Topology(bool* checker, GeometricData* preProcData, CollocationData* collocationData) override;
 };
 
 class CollocationMethod

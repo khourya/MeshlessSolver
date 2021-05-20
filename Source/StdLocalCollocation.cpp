@@ -6,7 +6,7 @@ void StdLocalCollocation::displayStrat()
 	std::cout << "Implementing standard local collocation." << endl;
 }
 
-int StdLocalCollocation::Topology(bool* checker, PreprocessorData* preProcData, CollocationData* collocationData)
+int StdLocalCollocation::Topology(bool* checker, GeometricData* preProcData, CollocationData* collocationData)
 {
 	int errorFlag = 0;
 
@@ -135,7 +135,7 @@ int StdLocalCollocation::Topology(bool* checker, PreprocessorData* preProcData, 
 	return errorFlag;
 }
 
-int StdLocalCollocation::Collocate(bool* checker, PreprocessorData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors)
+int StdLocalCollocation::Collocate(bool* checker, GeometricData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors)
 {
 	int errorFlag = 0;
 	

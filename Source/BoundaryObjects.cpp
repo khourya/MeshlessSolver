@@ -27,7 +27,7 @@ BoundaryObject::BoundaryObject(int boundaryKind, int NS, double diffusionCoeffic
 
 }
 
-int BoundaryObject::ApplyBoundaryCondition(PreprocessorData* preProcData, SolutionData* solutionData)
+int BoundaryObject::ApplyBoundaryCondition(GeometricData* preProcData, SolutionData* solutionData)
 {
 	int errorFlag = 0;
 
@@ -49,7 +49,7 @@ int BoundaryObject::ApplyBoundaryCondition(PreprocessorData* preProcData, Soluti
 	return errorFlag;
 }
 
-int BoundaryObject::UpdateDonorVolume(double dT, PreprocessorData* preProcData, SolutionData* solutionData)
+int BoundaryObject::UpdateDonorVolume(double dT, GeometricData* preProcData, SolutionData* solutionData)
 {
 	int errorFlag = 0;
 

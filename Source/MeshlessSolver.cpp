@@ -9,7 +9,7 @@ int main()
 {
     // Boolean for checking stuff
     bool checker = false;
-    bool runUnitTests = true;
+    bool runUnitTests = false;
     bool runCode = false;
 
     // Intro Message ----------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ int main()
     // Data Structures to be used
     Options options;
     InputData inputData;
-    PreprocessorData preProcData;
+    GeometricData preProcData;
     SolutionData solution;
 
     if (runCode)
@@ -66,6 +66,17 @@ int main()
     // Preprocessing ----------------------------------------------------------------------------------
     std::cout << "Generating geometric and field data........................";
     errorFlag = PreprocessDomain(&checker, &options, &inputData, &preProcData, &solution);
+    if (errorFlag != 0)
+    {
+        LogErrors(errorFlag);
+        return -1;
+    }
+    std::cout << " done!" << std::endl;
+    // ------------------------------------------------------------------------------------------------
+
+    // Triangulating ----------------------------------------------------------------------------------
+    std::cout << "Performing Delaunay triangulation..........................";
+    errorFlag = Triangulate(&checker, &preProcData, &solution);
     if (errorFlag != 0)
     {
         LogErrors(errorFlag);

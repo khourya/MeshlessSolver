@@ -70,13 +70,13 @@ void WriteShapeFactors(std::vector<double> factors, std::vector<double> shapeFac
 	myFile.close();
 }
 
-void WriteOutput(double step, double time, PreprocessorData* preProcData, SolutionData* solutionData)
+void WriteOutput(double step, double time, GeometricData* preProcData, SolutionData* solutionData)
 {
 	WriteUnbound(step, time, preProcData, solutionData);
 	WriteBound(step, time, preProcData, solutionData);
 }
 
-void WriteUnbound(double step, double time, PreprocessorData* preProcData, SolutionData* solutionData)
+void WriteUnbound(double step, double time, GeometricData* preProcData, SolutionData* solutionData)
 {
 	const std::string outputFile = "Data\\LCMMUnboundSolution.txt";
 	std::vector<const char*> headers = { "Step", "Time [s]", "N", "X", "Y", "Concentration", "Fx", "Fy" };
@@ -137,7 +137,7 @@ void WriteUnbound(double step, double time, PreprocessorData* preProcData, Solut
 	myFile.close();
 }
 
-void WriteBound(double step, double time, PreprocessorData* preProcData, SolutionData* solutionData)
+void WriteBound(double step, double time, GeometricData* preProcData, SolutionData* solutionData)
 {
 	const std::string outputFile = "Data\\LCMMBoundSolution.txt";
 	std::vector<const char*> headers = { "Step", "Time [s]", "N", "X", "Y", "Concentration" };

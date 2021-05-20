@@ -10,7 +10,7 @@
 #include <cmath>
 #include "MathUtil.h"
 
-struct PreprocessorData;
+struct GeometricData;
 struct SolutionData;
 
 // Enumerator for Node Generation Strategy
@@ -29,12 +29,69 @@ enum class collocationStratFlag
 	Global
 };
 
+enum class PointClassification
+{
+	Undefined = -1,
+	Boundary,
+	Interior
+};
+
 enum class boundaryType
 {
 	FirstKind = 1,
 	SecondKind,
 	ThirdKind,
 	FiniteVehicle
+};
+
+// Geometric Structures
+struct Point
+{
+	Point(double x, double y) : m_x{ x }, m_y{ y }
+	{};
+
+	void SetIndex(int index) { m_index = index; }
+	int GetIndex() { return m_index; }
+
+	PointClassification GetPointClassification() { return m_pointType; }
+	void SetPointClassification(PointClassification type) { m_pointType = type; }
+
+	double GetX() { return m_x; }
+	double GetY() { return m_y; }
+
+	void SetBoundConcentration(double c) { m_cbound = c; }
+	void SetUnboundConcentration(double c) { m_cfree = c; }
+	double GetBoundConcentration() { return m_cbound; }
+	double GetUnboundConcentration() { return m_cfree; }
+private:
+	// Indexing
+	int m_index = -1;
+	PointClassification m_pointType = PointClassification::Undefined;
+
+	// Geometric Location
+	double m_x = DBL_MIN;
+	double m_y = DBL_MIN;
+
+	// Concentrations
+	double m_cbound = 0.;
+	double m_cfree = 0.;
+};
+
+class Triangle
+{
+	Triangle(Point* point1, Point* point2, Point* point3) : m_point1{ point1 }, m_point2{ point2 }, m_point3{ point3 }
+	{}
+
+	Point* GetPoint(int index);
+
+	double GetArea();
+	double GetVolume();
+
+private:
+	Point* m_point1 = nullptr;
+	Point* m_point2 = nullptr;
+	Point* m_point3 = nullptr;
+
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -93,8 +150,8 @@ class BoundaryObject
 public:
 	BoundaryObject(int boundaryKind, int NS, double diffusionCoefficient, double boundaryValue, double vehicleVolume);
 
-	int ApplyBoundaryCondition(PreprocessorData* preProcData, SolutionData* solutionData);
-	int UpdateDonorVolume(double dT, PreprocessorData* preProcData, SolutionData* solutionData);
+	int ApplyBoundaryCondition(GeometricData* preProcData, SolutionData* solutionData);
+	int UpdateDonorVolume(double dT, GeometricData* preProcData, SolutionData* solutionData);
 	void AddNode(int index);
 	void AddNormalVectors(double dNx, double dNy);
 
@@ -118,11 +175,13 @@ private:
 /// PreprocesserData: Struct containing the information that defines the data centers of the domain
 ///
 //----------------------------------------------------------------------------------------------------------------------
-struct PreprocessorData
+struct GeometricData
 {
+	void AddPoint(Point* point) { m_points.push_back(point); }
+
 	// Point Count
-	int nBoundaryPoints = 0;               // Number of boundary points: NB
-	int nInternalPoints = 0;               // Number of internal points: NN
+	int nBoundaryPoints = -1;               // Number of boundary points: NB
+	int nInternalPoints = -1;               // Number of internal points: NN
 
 	// Boundary Geometry
 	std::vector <std::vector<double> > X;  // x-locations of boundary points
@@ -164,10 +223,10 @@ struct PreprocessorData
 	// Geometry, Location of Data Centers
 	std::vector<double> Xc;                // x-coordinate for Data Centers
 	std::vector<double> Yc;                // y-coordinate for Data Centers
-	double xmin = 1.0e100;                 // lower bound on domain x-direction, initialized large and updated
-	double xmax = -1.0e100;                // upper bounds on domain x-direction, initialized small and updated
-	double ymin = 1.0e100;                 // lower bound on domain y-direction, initialized large and updated
-	double ymax = -1.0e100;                // upper bounds on domain x-direction, initialized small and updated
+	double xmin = DBL_MAX;                 // lower bound on domain x-direction, initialized large and updated
+	double xmax = DBL_MIN;                // upper bounds on domain x-direction, initialized small and updated
+	double ymin = DBL_MAX;                 // lower bound on domain y-direction, initialized large and updated
+	double ymax = DBL_MIN;                // upper bounds on domain x-direction, initialized small and updated
 
 	// std::vector<double> Xcp;            // x-coordinate for Corner Points
 	// std::vector<double> Ycp;            // y-coordinate for Corner Points
@@ -176,6 +235,8 @@ struct PreprocessorData
 	double delX = 0;        // Average spacing in x-coordinate
 	double delY = 0;        // Average spacing in y-coordinate
 
+	std::vector<Point*> m_points;
+	std::vector <Triangle*> m_triangles;
 };
 
 struct SolutionData
