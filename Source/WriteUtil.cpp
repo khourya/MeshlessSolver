@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "MeshlessSolver.h"
+#include "WriteUtil.h"
 
 void WriteCSV(double NB, std::vector<double> col1, std::vector<double> col2)
 {
@@ -99,9 +100,9 @@ void WriteUnbound(double step, double time, GeometricData* preProcData, Solution
 		}
 
 		// Writing Data
-		for (int i = 0; i < preProcData->nInternalPoints; i++)
+		for (int i = 0; i < preProcData->m_nInternalPoints; i++)
 		{
-			if (i < preProcData->nBoundaryPoints)
+			if (i < preProcData->m_nBoundaryPoints)
 			{
 				// Writes as: Step | Time | Index | Xc | Yc | Concentration | Flux_x | Flux_y
 				myFile << step << "," << time << "," << i + 1 << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cT_bnd[i] << "," << solutionData->fTx_bnd[i] << "," << solutionData->fTy_bnd[i] << endl;
@@ -109,7 +110,7 @@ void WriteUnbound(double step, double time, GeometricData* preProcData, Solution
 			else
 			{
 				// Writes as: Step | Time | Index | Xc | Yc | Concentration | Flux_x | Flux_y
-				myFile << step << "," << time << "," << i + 1 - preProcData->nBoundaryPoints << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cT_int[i] << "," << solutionData->fTx_int[i] << "," << solutionData->fTy_int[i] << endl;
+				myFile << step << "," << time << "," << i + 1 - preProcData->m_nBoundaryPoints << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cT_int[i] << "," << solutionData->fTx_int[i] << "," << solutionData->fTy_int[i] << endl;
 			}
 		}
 
@@ -121,15 +122,15 @@ void WriteUnbound(double step, double time, GeometricData* preProcData, Solution
 		myFile.open(outputFile, std::ios::app);
 
 		// Writing Data
-		for (int i = 0; i < preProcData->nInternalPoints; i++)
+		for (int i = 0; i < preProcData->m_nInternalPoints; i++)
 		{
-			if (i < preProcData->nBoundaryPoints)
+			if (i < preProcData->m_nBoundaryPoints)
 			{
 				myFile << step << "," << time << "," << i + 1 << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cT_bnd[i] << "," << solutionData->fTx_bnd[i] << "," << solutionData->fTy_bnd[i] << endl;
 			}
 			else
 			{
-				myFile << step << "," << time << "," << i + 1 - preProcData->nBoundaryPoints << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cT_int[i] << "," << solutionData->fTx_int[i] << "," << solutionData->fTy_int[i] << endl;
+				myFile << step << "," << time << "," << i + 1 - preProcData->m_nBoundaryPoints << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cT_int[i] << "," << solutionData->fTx_int[i] << "," << solutionData->fTy_int[i] << endl;
 			}
 		}
 	}
@@ -160,16 +161,16 @@ void WriteBound(double step, double time, GeometricData* preProcData, SolutionDa
 		}
 
 		// Writing Data
-		for (int i = 0; i < preProcData->nInternalPoints; i++)
+		for (int i = 0; i < preProcData->m_nInternalPoints; i++)
 		{
-			if (i < preProcData->nBoundaryPoints)
+			if (i < preProcData->m_nBoundaryPoints)
 			{
 				// Writes as: Step | Time | Index | Xc | Yc | Concentration | <No Fluxes>
 				myFile << step << "," << time << "," << i + 1 << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cB_bnd[i] << endl;
 			}
 			else
 			{
-				myFile << step << "," << time << "," << i + 1 - preProcData->nBoundaryPoints << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cB_int[i] << endl;
+				myFile << step << "," << time << "," << i + 1 - preProcData->m_nBoundaryPoints << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cB_int[i] << endl;
 			}
 		}
 
@@ -181,19 +182,66 @@ void WriteBound(double step, double time, GeometricData* preProcData, SolutionDa
 		myFile.open(outputFile, std::ios::app);
 
 		// Writing Data
-		for (int i = 0; i < preProcData->nInternalPoints; i++)
+		for (int i = 0; i < preProcData->m_nInternalPoints; i++)
 		{
-			if (i < preProcData->nBoundaryPoints)
+			if (i < preProcData->m_nBoundaryPoints)
 			{
 				// Writes as: Step | Time | Index | Xc | Yc | Concentration | <No Fluxes>
 				myFile << step << "," << time << "," << i + 1 << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cB_bnd[i] << endl;
 			}
 			else
 			{
-				myFile << step << "," << time << "," << i + 1 - preProcData->nBoundaryPoints << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cB_int[i] << endl;
+				myFile << step << "," << time << "," << i + 1 - preProcData->m_nBoundaryPoints << "," << preProcData->Xc[i] << "," << preProcData->Yc[i] << "," << solutionData->cB_int[i] << endl;
 			}
 		}
 	}
 
 	myFile.close();
+}
+
+int GeometricData::WriteMeshData()
+{
+	const std::string outputFile = "Data\\MeshData.txt";
+	std::vector<const char*> headers = { "N", "X1", "Y1", "X2", "Y2", "X3", "Y3" };
+	std::ofstream myFile;
+
+	// Open as new file
+	myFile.open(outputFile, std::ios::out);
+
+	// Writing Headers
+	size_t I = headers.size();
+	for (size_t i = 0; i < I; i++)
+	{
+		if (i == I - 1)
+			myFile << headers[i] << "\n";
+		else
+			myFile << headers[i] << ",";
+	}
+
+	int index = 0;
+
+	for (Triangle* triangle : m_triangles)
+	{
+		Point* pt1 = triangle->GetPoint(1);
+		double x1 = pt1->GetX();
+		double y1 = pt1->GetY();
+
+		Point* pt2 = triangle->GetPoint(2);
+		double x2 = pt2->GetX();
+		double y2 = pt2->GetY();
+
+		Point* pt3 = triangle->GetPoint(3);
+		double x3 = pt3->GetX();
+		double y3 = pt3->GetY();
+
+		myFile << index << ","
+			<< x1 << "," << y1 << ","
+			<< x2 << "," << y2 << ","
+			<< x3 << "," << y3 << "\n";
+		
+		index++;
+	}
+
+	myFile.close();
+	return true;
 }

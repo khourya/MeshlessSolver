@@ -23,36 +23,36 @@ void StandardGeneration::displayStrat()
 	std::cout << "Implementing standard internal node generation method." << endl;
 }
 
-int StandardGeneration::generateNodes(bool* checker, GeometricData* preProcData)
+int StandardGeneration::generateNodes(bool* checker, GeometricData* geometricData)
 {
 	int errorFlag = 0;
 
 	// Temporary varible representing max-min
-	double spanX = preProcData->xmax - preProcData->xmin;
-	double spanY = preProcData->xmax - preProcData->xmin;
+	double spanX = geometricData->xmax - geometricData->xmin;
+	double spanY = geometricData->xmax - geometricData->xmin;
 
-	preProcData->nInternalPoints = 2 * preProcData->nBoundaryPoints;
-	int nX = static_cast<int>(1001. * spanX / preProcData->delX) / 1000;
-	int nY = static_cast<int>(1001. * spanY / preProcData->delY) / 1000;
+	geometricData->m_nInternalPoints = 1 * geometricData->m_nBoundaryPoints;
+	int nX = static_cast<int>(1001. * spanX / geometricData->delX) / 1000;
+	int nY = static_cast<int>(1001. * spanY / geometricData->delY) / 1000;
 
 	for (int i = 1; i < nY; i++)
 	{
 		for (int j = 1; j < nX; j++)
 		{
-			double xInternal = preProcData->xmin + (spanX * static_cast<double>(j) / static_cast<double>(nX));
-			double yInternal = preProcData->ymin + (spanY * static_cast<double>(i) / static_cast<double>(nY));
-			if (isOnEdge(xInternal, yInternal, preProcData))
+			double xInternal = geometricData->xmin + (spanX * static_cast<double>(j) / static_cast<double>(nX));
+			double yInternal = geometricData->ymin + (spanY * static_cast<double>(i) / static_cast<double>(nY));
+			if (isOnEdge(xInternal, yInternal, geometricData))
 			{
 				continue;
 			}
-			if (isInsideDomain(xInternal, yInternal, preProcData))
+			if (isInsideDomain(xInternal, yInternal, geometricData))
 			{
 				bool closeToBoundary = false;
-				for (int k = 0; k < preProcData->nBoundaryPoints; k++)
+				for (int k = 0; k < geometricData->m_nBoundaryPoints; k++)
 				{
-					double dist = (xInternal - preProcData->Xc[k])*(xInternal - preProcData->Xc[k]) + (yInternal - preProcData->Yc[k])*(yInternal - preProcData->Yc[k]);
+					double dist = (xInternal - geometricData->Xc[k])*(xInternal - geometricData->Xc[k]) + (yInternal - geometricData->Yc[k])*(yInternal - geometricData->Yc[k]);
 					dist = std::sqrt(dist);
-					if (dist < preProcData->dL[k] / 3.)
+					if (dist < geometricData->dL[k] / 3.)
 					{
 						closeToBoundary = true;
 					}
@@ -60,9 +60,9 @@ int StandardGeneration::generateNodes(bool* checker, GeometricData* preProcData)
 				// If not on the boundary, add to the vector of internal points
 				if (!closeToBoundary) // && (!onEdge))
 				{
-					preProcData->nInternalPoints++;
-					preProcData->Xc.push_back(xInternal);
-					preProcData->Yc.push_back(yInternal);
+					geometricData->m_nInternalPoints++;
+					geometricData->Xc.push_back(xInternal);
+					geometricData->Yc.push_back(yInternal);
 
 					if (*checker)
 						std::cout << "New Internal Point: [" << xInternal << ", " << yInternal << "]" << endl;
@@ -91,7 +91,7 @@ bool isInsideDomain(double xi, double yi, GeometricData* preProcData)
 	bool inside = true;
 
 	double Ci = 0.;
-	for (int j = 0; j < preProcData->nBoundaryPoints; j++)
+	for (int j = 0; j < preProcData->m_nBoundaryPoints; j++)
 	{
 		double diffX = preProcData->X[j][2] - xi;
 		double diffY = preProcData->Y[j][2] - yi;

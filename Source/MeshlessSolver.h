@@ -24,7 +24,7 @@ int  ReadOptions(bool* checker, Options* options);
 
 // Preprocessor Functions
 int  PreprocessDomain(bool* checker, Options* options, InputData* inputData, GeometricData* preProcData, SolutionData* solution);
-void SetInitialCondition(int nB, int nI, SolutionData* solution);
+void SetInitialCondition(GeometricData* geometricData, SolutionData* solution);
 bool isInsideDomain(double xc, double yc, GeometricData* preProcData);
 bool isOnEdge(double xi, double yi, GeometricData* preProcData);
 void LogBoundaryPoints(int i, int j, int nBoundaryPoints);
@@ -48,12 +48,3 @@ int LUBackSubstitution(std::vector<std::vector<double>> &A, int nInfluencePoints
 // Solution Methods
 int Solver(bool* checker, InputData* inputData, GeometricData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors, SolutionData* solutionData);
 int Solution(bool* checker, InputData* inputData, GeometricData* preProcData, CollocationData* collocationData, InterpolationVectors* interpolationVectors, SolutionData* solutionData);
-
-// Logging Output Data
-void WriteOutput(double step, double time, GeometricData* preProcData, SolutionData* solutionData);
-void WriteUnbound(double step, double time, GeometricData* preProcData, SolutionData* solutionData);
-void WriteBound(double step, double time, GeometricData* preProcData, SolutionData* solutionData);
-void WriteCSV(double NB, std::vector<double> col1, std::vector<double> col2);
-void WriteMatrix(std::vector<std::vector<double>> A, std::vector<const char*> headers);
-void WriteShapeFactors(std::vector<double> factors, std::vector<double> shapeFactors, std::vector<int> nInfluencePoints);
-void LogErrors(int errorFlag);

@@ -4,13 +4,14 @@
 #include <iostream>
 
 #include "MeshlessSolver.h"
+#include "WriteUtil.h"
 
 int main()
 {
     // Boolean for checking stuff
     bool checker = false;
     bool runUnitTests = false;
-    bool runCode = false;
+    bool runCode = true;
 
     // Intro Message ----------------------------------------------------------------------------------
     std::cout << "Localized RBF Collocation Meshless Method" << std::endl;
@@ -36,7 +37,7 @@ int main()
     // Data Structures to be used
     Options options;
     InputData inputData;
-    GeometricData preProcData;
+    GeometricData geometricData;
     SolutionData solution;
 
     if (runCode)
@@ -54,7 +55,7 @@ int main()
 
     // Reading Input ----------------------------------------------------------------------------------
     std::cout << "Reading input file.........................................";
-    errorFlag = ReadInputs(&checker, &inputData, &preProcData);
+    errorFlag = ReadInputs(&checker, &inputData, &geometricData);
     if (errorFlag != 0)
     {
         LogErrors(errorFlag);
@@ -65,7 +66,7 @@ int main()
 
     // Preprocessing ----------------------------------------------------------------------------------
     std::cout << "Generating geometric and field data........................";
-    errorFlag = PreprocessDomain(&checker, &options, &inputData, &preProcData, &solution);
+    errorFlag = PreprocessDomain(&checker, &options, &inputData, &geometricData, &solution);
     if (errorFlag != 0)
     {
         LogErrors(errorFlag);
@@ -76,7 +77,7 @@ int main()
 
     // Triangulating ----------------------------------------------------------------------------------
     std::cout << "Performing Delaunay triangulation..........................";
-    errorFlag = Triangulate(&checker, &preProcData, &solution);
+    errorFlag = Triangulate(&checker, &geometricData);
     if (errorFlag != 0)
     {
         LogErrors(errorFlag);
@@ -90,7 +91,7 @@ int main()
     std::cout << "Applying collocation methodology..........................." << std::endl;
     CollocationData collocationData;
     InterpolationVectors interpolationVectors;
-    errorFlag = Collocation(&checker, &options, &preProcData, &collocationData, &interpolationVectors);
+    errorFlag = Collocation(&checker, &options, &geometricData, &collocationData, &interpolationVectors);
     if (errorFlag != 0)
     {
         LogErrors(errorFlag);
@@ -101,7 +102,7 @@ int main()
 
     // Computing Transient Solution -------------------------------------------------------------------
     std::cout << "Calculating solution.......................................\n";
-    errorFlag = Solver(&checker, &inputData, &preProcData, &collocationData, &interpolationVectors, &solution);
+    errorFlag = Solver(&checker, &inputData, &geometricData, &collocationData, &interpolationVectors, &solution);
     if (errorFlag != 0)
     {
         LogErrors(errorFlag);

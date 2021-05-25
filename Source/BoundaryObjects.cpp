@@ -31,7 +31,7 @@ int BoundaryObject::ApplyBoundaryCondition(GeometricData* preProcData, SolutionD
 {
 	int errorFlag = 0;
 
-	int NB = preProcData->nBoundaryPoints;
+	int NB = preProcData->m_nBoundaryPoints;
 
 	for (int i : m_boundaryMemberIndices)
 	{

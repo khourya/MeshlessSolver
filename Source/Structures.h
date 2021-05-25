@@ -9,8 +9,9 @@
 #include <math.h>
 #include <cmath>
 #include "MathUtil.h"
+#include "Triangulate.h"
 
-struct GeometricData;
+class GeometricData;
 struct SolutionData;
 
 // Enumerator for Node Generation Strategy
@@ -79,19 +80,22 @@ private:
 
 class Triangle
 {
+public:
 	Triangle(Point* point1, Point* point2, Point* point3) : m_point1{ point1 }, m_point2{ point2 }, m_point3{ point3 }
 	{}
 
 	Point* GetPoint(int index);
 
 	double GetArea();
-	double GetVolume();
+	double GetVolume(std::string compartment);
+
+	void SetIndex(int i) { m_index = i; }
 
 private:
 	Point* m_point1 = nullptr;
 	Point* m_point2 = nullptr;
 	Point* m_point3 = nullptr;
-
+	int m_index = -1;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -175,13 +179,25 @@ private:
 /// PreprocesserData: Struct containing the information that defines the data centers of the domain
 ///
 //----------------------------------------------------------------------------------------------------------------------
-struct GeometricData
+class GeometricData
 {
+public:
 	void AddPoint(Point* point) { m_points.push_back(point); }
 
+	std::vector<double> GetOrderedCoordinates();
+	Point* GetPointByCoordinates(double x, double y);
+	int GetPointsListLength() { return static_cast<int>(m_points.size()); }
+
+	int GeneratePointsList();
+	int GenerateTriangles(delaunator::Delaunator d);
+	int WriteMeshData();
+
+	std::vector<Point*> GetBoundaryPoints();
+	std::vector<Point*> GetInteriorPoints();
+
 	// Point Count
-	int nBoundaryPoints = -1;               // Number of boundary points: NB
-	int nInternalPoints = -1;               // Number of internal points: NN
+	int m_nBoundaryPoints = -1;               // Number of boundary points: NB
+	int m_nInternalPoints = -1;               // Number of internal points: NN
 
 	// Boundary Geometry
 	std::vector <std::vector<double> > X;  // x-locations of boundary points
@@ -235,6 +251,7 @@ struct GeometricData
 	double delX = 0;        // Average spacing in x-coordinate
 	double delY = 0;        // Average spacing in y-coordinate
 
+private:
 	std::vector<Point*> m_points;
 	std::vector <Triangle*> m_triangles;
 };

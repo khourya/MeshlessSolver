@@ -1,4 +1,5 @@
 #include "MeshlessSolver.h"
+#include "WriteUtil.h"
 
 // Standard Local Collocation Methods
 void StdLocalCollocation::displayStrat()
@@ -14,12 +15,12 @@ int StdLocalCollocation::Topology(bool* checker, GeometricData* preProcData, Col
 	double influenceRadius = 2.2 * std::sqrt(preProcData->delX * preProcData->delX + preProcData->delY * preProcData->delY);  // Radius of Influence Topology
 
 	// Capture Points within the Topology of Influence
-	for (int i = 0; i < preProcData->nInternalPoints; i++)
+	for (int i = 0; i < preProcData->m_nInternalPoints; i++)
 	{
 		// Select a point in the domain, "i" and set the initial number of points within its topology of inluence as zero
 		collocationData->nInfluencePoints.push_back(0);
 		std::vector<int> topologyRow;  // a row of indices that will be pushed back into the iTopology vector
-		for (int j = 0; j < preProcData->nInternalPoints; j++)
+		for (int j = 0; j < preProcData->m_nInternalPoints; j++)
 		{
 			// Measure distance from each point "j," to point of interest, "i"
 			double dist = (preProcData->Xc[i] - preProcData->Xc[j]) * (preProcData->Xc[i] - preProcData->Xc[j]) + (preProcData->Yc[i] - preProcData->Yc[j]) * (preProcData->Yc[i] - preProcData->Yc[j]);
@@ -35,7 +36,7 @@ int StdLocalCollocation::Topology(bool* checker, GeometricData* preProcData, Col
 	}
 	// std::cout << preProcData->nInternalPoints;
 	// Optimize RBF Shape Parameter on Every Topology
-	for (int i = 0; i < preProcData->nInternalPoints; i++)
+	for (int i = 0; i < preProcData->m_nInternalPoints; i++)
 	{
 		double factor = 5.;
 		double cond = 1.;
@@ -139,7 +140,7 @@ int StdLocalCollocation::Collocate(bool* checker, GeometricData* preProcData, Co
 {
 	int errorFlag = 0;
 	
-	for (int i = 0; i < preProcData->nInternalPoints; i++)
+	for (int i = 0; i < preProcData->m_nInternalPoints; i++)
 	{
 		// Creating Phi Matrix
 		std::vector<std::vector<double>> phiMatrix;
@@ -228,7 +229,7 @@ int StdLocalCollocation::Collocate(bool* checker, GeometricData* preProcData, Co
 		}
 
 		// Boundary End-Node Interpolation
-		if (i < preProcData->nBoundaryPoints)
+		if (i < preProcData->m_nBoundaryPoints)
 		{
 			double xi = preProcData->X[i][0];
 			double yi = preProcData->Y[i][0];

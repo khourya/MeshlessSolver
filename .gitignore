@@ -33,12 +33,11 @@
 
 .vs/
 
+# My stuff
 bin/
+Data/*.txt
 
 *.iobj
-
 *.ipdb
-
 *.pdb
-
 *.ilk

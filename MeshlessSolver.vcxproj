@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Source\BoundaryObjects.cpp" />
     <ClCompile Include="Source\CollocationStrategy.cpp" />
+    <ClCompile Include="Source\GeometryUtil.cpp" />
     <ClCompile Include="Source\GlobalCollocation.cpp" />
     <ClCompile Include="Source\LUFunctions.cpp" />
     <ClCompile Include="Source\MathUtil.cpp" />
@@ -51,6 +52,7 @@
     <ClInclude Include="Source\Structures.h" />
     <ClInclude Include="Source\Triangulate.h" />
     <ClInclude Include="Source\UnitTestUtil.h" />
+    <ClInclude Include="Source\WriteUtil.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

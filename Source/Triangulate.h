@@ -71,5 +71,3 @@ private:
     void link(std::size_t a, std::size_t b);
 };
 } //namespace delaunator
-
-int WriteMesh(delaunator::Delaunator d);
