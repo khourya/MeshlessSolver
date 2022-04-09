@@ -20,6 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\OptionsProcessor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\MeshlessSolver.h" />
+    <ClInclude Include="Source\Structures.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
