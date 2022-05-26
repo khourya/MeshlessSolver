@@ -3,9 +3,12 @@
 
 #include <iostream>
 
+#include "../UnitTests/Source/UnitTests.h"
+
 int main()
 {
     std::cout << "Hello World!\n";
+    fnUnitTests();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

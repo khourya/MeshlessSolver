@@ -33,4 +33,5 @@
 
 # Folders
 bin/Intermediates/*
+UnitTests/bin/Intermediates/*
 .vs/*
