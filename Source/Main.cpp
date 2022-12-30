@@ -25,6 +25,7 @@ int main()
     errorFlag = ReadOptions(&checker, &options);
     if (errorFlag != 0)
     {
+        // Errors begin with 1
         logger->LogErrorsWarnings(errorFlag);
         return -1;
     }
@@ -37,11 +38,27 @@ int main()
     errorFlag = ReadInputs(&checker, &inputData);
     if (errorFlag != 0)
     {
+        // Errors begin with 2
         logger->LogErrorsWarnings(errorFlag);
         return -1;
     }
     std::cout << "... done!" << std::endl;
     // ------------------------------------------------------------------------------------------------
+
+    // Preprocessing ----------------------------------------------------------------------------------
+    std::cout << "Generating geometric and field data........................\n";
+    PreprocessorData preProcData;
+    SolutionData solution;
+    errorFlag = PreprocessDomain(&checker, &options, &inputData, &preProcData, &solution);
+    if (errorFlag != 0)
+    {
+        // Errors begin with 3
+        logger->LogErrorsWarnings(errorFlag);
+        return -1;
+    }
+    std::cout << "... done!" << std::endl;
+    // ------------------------------------------------------------------------------------------------
+
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

@@ -7,9 +7,6 @@
 const char tab[2] = "\t";
 const char endl[2] = "\n";
 
-// Unit Tests
-bool RunUnitTests();
-
 // Reading Inputs
 void InputChecker(InputData* inputData);
 int ReadInputs(bool* checker, InputData* inputData);
