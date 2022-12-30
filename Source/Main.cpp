@@ -3,12 +3,32 @@
 
 #include <iostream>
 
-#include "../UnitTests/Source/UnitTests.h"
+#include "ErrorLogger.h"
+#include "MeshlessSolver.h"
 
 int main()
 {
     std::cout << "Hello World!\n";
-    fnUnitTests();
+
+    // Flag for Error Reporting
+    int errorFlag = 0;
+    Logger* logger = new Logger();
+
+    // Boolean for checking stuff
+    bool checker = true;
+    bool runUnitTests = false;
+    bool runCode = true;
+
+    // Reading Options --------------------------------------------------------------------------------
+    std::cout << "Reading options file.......................................";
+    Options options;
+    errorFlag = ReadOptions(&checker, &options);
+    if (errorFlag != 0)
+    {
+        logger->LogErrorsWarnings(errorFlag);
+        return -1;
+    }
+    std::cout << "... done!" << std::endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
