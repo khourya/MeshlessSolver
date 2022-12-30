@@ -1,0 +1,5 @@
+Flag for Internal Node Generation (0 = Standard, 1 = Random, 2 = Ravel, 3 = Jure)
+0
+
+Flag for Topology Generation and Collocation (0 = Global, 1 = Local, 2 = Local w/ Polynomial Augmentation)
+0

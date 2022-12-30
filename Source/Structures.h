@@ -13,16 +13,17 @@
 enum class nodeStratFlag
 {
 	Standard = 0,
-	Jure,
-	Ravel
+	Random,
+	Ravel,
+	Jure
 };
 
 // Enumerator for Topology/Collocation Strategy
 enum class collocationStratFlag
 {
-	StdLocal = 0,
-	LocalwPoly,
-	Global
+	Global = 0,
+	Local,
+	LocalwPoly
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -33,7 +34,7 @@ enum class collocationStratFlag
 struct Options
 {
 	nodeStratFlag internalNodeGenFlag = nodeStratFlag::Standard;
-	collocationStratFlag topologyGenFlag = collocationStratFlag::StdLocal;
+	collocationStratFlag topologyGenFlag = collocationStratFlag::Global;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -122,17 +123,17 @@ struct PreprocessorData
 	// Geometry, Location of Data Centers
 	std::vector<double> Xc;                // x-coordinate for Data Centers
 	std::vector<double> Yc;                // y-coordinate for Data Centers
-	double xmin = 1.0e100;                 // lower bound on domain x-direction, initialized large and updated
-	double xmax = -1.0e100;                // upper bounds on domain x-direction, initialized small and updated
-	double ymin = 1.0e100;                 // lower bound on domain y-direction, initialized large and updated
-	double ymax = -1.0e100;                // upper bounds on domain x-direction, initialized small and updated
+	double xmin = DBL_MAX;                 // lower bound on domain x-direction, initialized large and updated
+	double xmax = -DBL_MAX;                // upper bounds on domain x-direction, initialized small and updated
+	double ymin = DBL_MAX;                 // lower bound on domain y-direction, initialized large and updated
+	double ymax = -DBL_MAX;                // upper bounds on domain x-direction, initialized small and updated
 
 	// std::vector<double> Xcp;            // x-coordinate for Corner Points
 	// std::vector<double> Ycp;            // y-coordinate for Corner Points
 
 	// RBF Parameters
-	double delX = 0;        // Average spacing in x-coordinate
-	double delY = 0;        // Average spacing in y-coordinate
+	double delX = -1.0;        // Average spacing in x-coordinate
+	double delY = -1.0;        // Average spacing in y-coordinate
 
 };
 
