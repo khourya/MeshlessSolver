@@ -54,40 +54,37 @@ int ReadOptions(bool* checker, Options* options)
 void OptionsChecker(nodeStratFlag* nodeGenFlag, collocationStratFlag* topologyFlag)
 {
 	// Validating options:
-	std::cout << endl << "  Validating Options:";
+	std::cout << "  Validating Options:" << std::endl;
 
 	// Node Generation
 	if (*nodeGenFlag == nodeStratFlag::Standard)
 	{
-		std::cout << endl << "\tImplementing standard method for internal node generation.";
+		std::cout << "\tImplementing standard method for internal node generation." << std::endl;
 	}
 	else if (*nodeGenFlag == nodeStratFlag::Random)
 	{
-		std::cout << endl << "\tImplementing random internal node generation.";
+		std::cout << "\tImplementing random internal node generation." << std::endl;
 	}
 	else if (*nodeGenFlag == nodeStratFlag::Ravel)
 	{
-		std::cout << endl << "\tImplementing Ravel method for internal node generation.";
+		std::cout << "\tImplementing Ravel method for internal node generation." << std::endl;
 	}
 	else if (*nodeGenFlag == nodeStratFlag::Jure)
 	{
-		std::cout << endl << "\tImplementing Jure's method for internal node generation.";
+		std::cout << "\tImplementing Jure's method for internal node generation." << std::endl;
 	}
 
 	// Topology Generation/Collocaiton
 	if (*topologyFlag == collocationStratFlag::Global)
 	{
-		std::cout << endl << "\tImplementing global collocation.";
+		std::cout << "\tImplementing global collocation." << std::endl;
 	}
 	else if (*topologyFlag == collocationStratFlag::Local)
 	{
-		std::cout << endl << "\tImplementing standard local collocation method.";
+		std::cout << "\tImplementing standard local collocation method." << std::endl;
 	}
 	else if (*topologyFlag == collocationStratFlag::LocalwPoly)
 	{
-		std::cout << endl << "\tImplementing local collocation with polynomial augmentation.";
+		std::cout << "\tImplementing local collocation with polynomial augmentation." << std::endl;
 	}
-
-	// Linebreak after the checking
-	std::cout << endl;
 }

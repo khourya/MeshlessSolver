@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Parameters.h"
 #include "Structures.h"
 
 // Commonly used character arrays

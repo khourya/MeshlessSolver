@@ -20,7 +20,7 @@ int main()
     bool runCode = true;
 
     // Reading Options --------------------------------------------------------------------------------
-    std::cout << "Reading options file.......................................";
+    std::cout << "Reading options file.......................................\n";
     Options options;
     errorFlag = ReadOptions(&checker, &options);
     if (errorFlag != 0)
@@ -29,6 +29,19 @@ int main()
         return -1;
     }
     std::cout << "... done!" << std::endl;
+    // ------------------------------------------------------------------------------------------------
+
+    // Reading Input ----------------------------------------------------------------------------------
+    std::cout << "Reading input file.........................................\n";
+    InputData inputData;
+    errorFlag = ReadInputs(&checker, &inputData);
+    if (errorFlag != 0)
+    {
+        logger->LogErrorsWarnings(errorFlag);
+        return -1;
+    }
+    std::cout << "... done!" << std::endl;
+    // ------------------------------------------------------------------------------------------------
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
