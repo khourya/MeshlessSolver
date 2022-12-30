@@ -20,12 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ErrorLogger.cpp" />
+    <ClCompile Include="Source\InputProcessor.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\OptionsProcessor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\ErrorLogger.h" />
     <ClInclude Include="Source\MeshlessSolver.h" />
+    <ClInclude Include="Source\Parameters.h" />
     <ClInclude Include="Source\Structures.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
